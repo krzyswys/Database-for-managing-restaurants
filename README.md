@@ -1,1 +1,1 @@
-# Restaurant-Database
+# restaurant-database
