@@ -134,6 +134,14 @@ CREATE TABLE RestauransEmployees (
     CONSTRAINT RestauransEmployees_pk PRIMARY KEY  (RestaurantEmployeeID)
 );
 
+CREATE TABLE EmployeeSalary (
+    RestaurantEmployeeID int  NOT NULL,
+    FromTime datetime  NOT NULL,
+    ToTime datetime  NOT NULL,
+    Salary int NOT NULL,
+    CONSTRAINT EmployeeSalary_pk PRIMARY KEY  (RestaurantEmployeeID)
+);
+
 CREATE TABLE TakeAway (
     OrderID int  NOT NULL,
     PickupDate datetime  NOT NULL,
@@ -158,6 +166,10 @@ ALTER TABLE Companies ADD CONSTRAINT Companies_Customers
 ALTER TABLE CompanyEmployees ADD CONSTRAINT CompanyEmployees_Companies
     FOREIGN KEY (CompanyID)
     REFERENCES Companies (CompanyID);
+
+-- ALTER TABLE EmployeeSalary ADD CONSTRAINT CompanyEmployees_RestaurantEmployee
+--     FOREIGN KEY (RestaurantEmployeeID)
+--     REFERENCES Products (ProductID);
 
 ALTER TABLE CompanyReservationParticipants ADD CONSTRAINT CompanyEmployees_CompanyReservationParticipants
     FOREIGN KEY (CompanyEmployeeID)
