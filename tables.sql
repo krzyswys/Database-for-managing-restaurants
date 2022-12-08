@@ -1,5 +1,9 @@
--- tables
--- Table: Companies
+CREATE TABLE Categories (
+    CategoryID int  NOT NULL,
+    CategoryName varchar(64)  NOT NULL,
+    CONSTRAINT Categories_pk PRIMARY KEY  (CategoryID)
+);
+
 CREATE TABLE Companies (
     CompanyID int  NOT NULL,
     CustomerID int  NOT NULL,
@@ -8,7 +12,6 @@ CREATE TABLE Companies (
     CONSTRAINT Companies_pk PRIMARY KEY  (CompanyID)
 );
 
--- Table: CompanyEmployees
 CREATE TABLE CompanyEmployees (
     CompanyEmployeeID int  NOT NULL,
     PersonID int  NOT NULL,
@@ -16,14 +19,12 @@ CREATE TABLE CompanyEmployees (
     CONSTRAINT CompanyEmployees_pk PRIMARY KEY  (CompanyEmployeeID)
 );
 
--- Table: CompanyReservationParticipants
 CREATE TABLE CompanyReservationParticipants (
     ReservationID int  NOT NULL,
     CompanyEmployeeID int  NOT NULL,
     CONSTRAINT CompanyReservationParticipants_pk PRIMARY KEY  (ReservationID)
 );
 
--- Table: CustomerPersonalData
 CREATE TABLE CustomerPersonalData (
     PersonID int  NOT NULL,
     FirstName varchar(64)  NOT NULL,
@@ -31,7 +32,6 @@ CREATE TABLE CustomerPersonalData (
     CONSTRAINT CustomerPersonalData_pk PRIMARY KEY  (PersonID)
 );
 
--- Table: Customers
 CREATE TABLE Customers (
     CustomerID int  NOT NULL,
     Street varchar(64)  NOT NULL,
@@ -43,28 +43,52 @@ CREATE TABLE Customers (
     CONSTRAINT Customers_pk PRIMARY KEY  (CustomerID)
 );
 
--- Table: DiningTables
 CREATE TABLE DiningTables (
     DiningTableID int  NOT NULL,
     NumberOfSeats int  NOT NULL,
     CONSTRAINT DiningTables_pk PRIMARY KEY  (DiningTableID)
 );
 
--- Table: IndividualCustomers
 CREATE TABLE IndividualCustomers (
     CustomerID int  NOT NULL,
     PersonID int  NOT NULL,
     CONSTRAINT IndividualCustomers_pk PRIMARY KEY  (CustomerID)
 );
 
--- Table: Invoices
+CREATE TABLE IngredienstWarehouse (
+    IngredientID int  NOT NULL,
+    IngredientName varchar(64)  NOT NULL,
+    QuantityLeft int  NOT NULL,
+    CONSTRAINT IngredienstWarehouse_pk PRIMARY KEY  (IngredientID)
+);
+
 CREATE TABLE Invoices (
     InvoiceID int  NOT NULL,
     OrderID int  NOT NULL,
     CONSTRAINT InvoiceId PRIMARY KEY  (InvoiceID)
 );
 
--- Table: Orders
+CREATE TABLE Menu (
+    MenuID int  NOT NULL,
+    MenuName varchar(64)  NOT NULL,
+    FromTime datetime  NOT NULL,
+    ToTime datetime  NOT NULL,
+    CONSTRAINT Menu_pk PRIMARY KEY  (MenuID)
+);
+
+CREATE TABLE MenuDetails (
+    MenuID int  NOT NULL,
+    ProductID int  NOT NULL,
+    CONSTRAINT MenuDetails_pk PRIMARY KEY  (MenuID)
+);
+
+CREATE TABLE OrderDetails (
+    OrderID int  NOT NULL,
+    ProductID int  NOT NULL,
+    Quantity int  NOT NULL,
+    CONSTRAINT OrderID PRIMARY KEY  (OrderID)
+);
+
 CREATE TABLE Orders (
     OrderID int  NOT NULL,
     CustomerID int  NOT NULL,
@@ -72,10 +96,24 @@ CREATE TABLE Orders (
     PaymentDate datetime  NULL,
     OrderStatus varchar(12)  NOT NULL,
     RestaurantEmployeeID int  NOT NULL,
+    OrderDetails_OrderID int  NOT NULL,
     CONSTRAINT Orders_pk PRIMARY KEY  (OrderID)
 );
 
--- Table: Reservation
+CREATE TABLE ProductIngriedients (
+    ProductID int  NOT NULL,
+    IngredientID int  NOT NULL,
+    CONSTRAINT ProductIngriedients_pk PRIMARY KEY  (ProductID)
+);
+
+CREATE TABLE Products (
+    ProductID int  NOT NULL,
+    ProductName varchar(64)  NOT NULL,
+    CategoryID int  NOT NULL,
+    UnitPrice int  NOT NULL,
+    CONSTRAINT ProductID PRIMARY KEY  (ProductID)
+);
+
 CREATE TABLE Reservation (
     ReservationID int  NOT NULL,
     FromTime datetime  NOT NULL,
@@ -86,7 +124,6 @@ CREATE TABLE Reservation (
     CONSTRAINT Reservation_pk PRIMARY KEY  (ReservationID)
 );
 
--- Table: RestauransEmployees
 CREATE TABLE RestauransEmployees (
     RestaurantEmployeeID int  NOT NULL,
     FirstName varchar(64)  NOT NULL,
@@ -97,14 +134,12 @@ CREATE TABLE RestauransEmployees (
     CONSTRAINT RestauransEmployees_pk PRIMARY KEY  (RestaurantEmployeeID)
 );
 
--- Table: TakeAway
 CREATE TABLE TakeAway (
     OrderID int  NOT NULL,
     PickupDate datetime  NOT NULL,
     CONSTRAINT TakeAway_pk PRIMARY KEY  (OrderID)
 );
 
--- Table: VariablesData
 CREATE TABLE VariablesData (
     FromTime datetime  NOT NULL,
     ToTime datetime  NOT NULL,
@@ -112,71 +147,82 @@ CREATE TABLE VariablesData (
     Value int  NOT NULL
 );
 
--- foreign keys
--- Reference: Companies_Customers (table: Companies)
+ALTER TABLE Products ADD CONSTRAINT Categories_Products
+    FOREIGN KEY (CategoryID)
+    REFERENCES Categories (CategoryID);
+
 ALTER TABLE Companies ADD CONSTRAINT Companies_Customers
     FOREIGN KEY (CustomerID)
     REFERENCES Customers (CustomerID);
 
--- Reference: CompanyEmployees_Companies (table: CompanyEmployees)
 ALTER TABLE CompanyEmployees ADD CONSTRAINT CompanyEmployees_Companies
     FOREIGN KEY (CompanyID)
     REFERENCES Companies (CompanyID);
 
--- Reference: CompanyEmployees_CompanyReservationParticipants (table: CompanyReservationParticipants)
 ALTER TABLE CompanyReservationParticipants ADD CONSTRAINT CompanyEmployees_CompanyReservationParticipants
     FOREIGN KEY (CompanyEmployeeID)
     REFERENCES CompanyEmployees (CompanyEmployeeID);
 
--- Reference: CompanyReservationParticipants_Reservation (table: CompanyReservationParticipants)
 ALTER TABLE CompanyReservationParticipants ADD CONSTRAINT CompanyReservationParticipants_Reservation
     FOREIGN KEY (ReservationID)
     REFERENCES Reservation (ReservationID);
 
--- Reference: CustomerPersonalData_CompanyEmployees (table: CompanyEmployees)
 ALTER TABLE CompanyEmployees ADD CONSTRAINT CustomerPersonalData_CompanyEmployees
     FOREIGN KEY (PersonID)
     REFERENCES CustomerPersonalData (PersonID);
 
--- Reference: CustomerPersonalData_IndividualCustomers (table: IndividualCustomers)
 ALTER TABLE IndividualCustomers ADD CONSTRAINT CustomerPersonalData_IndividualCustomers
     FOREIGN KEY (PersonID)
     REFERENCES CustomerPersonalData (PersonID);
 
--- Reference: Customers_Orders (table: Orders)
 ALTER TABLE Orders ADD CONSTRAINT Customers_Orders
     FOREIGN KEY (CustomerID)
     REFERENCES Customers (CustomerID);
 
--- Reference: IndividualCustomers_Customers (table: IndividualCustomers)
 ALTER TABLE IndividualCustomers ADD CONSTRAINT IndividualCustomers_Customers
     FOREIGN KEY (CustomerID)
     REFERENCES Customers (CustomerID);
 
--- Reference: Orders_Invoices (table: Invoices)
+ALTER TABLE ProductIngriedients ADD CONSTRAINT IngredienstWarehouse_ProductIngriedients
+    FOREIGN KEY (IngredientID)
+    REFERENCES IngredienstWarehouse (IngredientID);
+
+ALTER TABLE MenuDetails ADD CONSTRAINT MenuDetails_Products
+    FOREIGN KEY (ProductID)
+    REFERENCES Products (ProductID);
+
+ALTER TABLE Menu ADD CONSTRAINT Menu_MenuDetails
+    FOREIGN KEY (MenuID)
+    REFERENCES MenuDetails (MenuID);
+
 ALTER TABLE Invoices ADD CONSTRAINT Orders_Invoices
     FOREIGN KEY (OrderID)
     REFERENCES Orders (OrderID);
 
--- Reference: Orders_Reservation (table: Orders)
+ALTER TABLE OrderDetails ADD CONSTRAINT Orders_OrderDetails
+    FOREIGN KEY (OrderID)
+    REFERENCES Orders (OrderID);
+
 ALTER TABLE Orders ADD CONSTRAINT Orders_Reservation
     FOREIGN KEY (RestaurantEmployeeID)
     REFERENCES Reservation (ReservationID);
 
--- Reference: Orders_RestauransEmployees (table: Orders)
 ALTER TABLE Orders ADD CONSTRAINT Orders_RestauransEmployees
     FOREIGN KEY (RestaurantEmployeeID)
     REFERENCES RestauransEmployees (RestaurantEmployeeID);
 
--- Reference: Orders_TakeAway (table: TakeAway)
 ALTER TABLE TakeAway ADD CONSTRAINT Orders_TakeAway
     FOREIGN KEY (OrderID)
     REFERENCES Orders (OrderID);
 
--- Reference: Reservation_DiningTables (table: Reservation)
+ALTER TABLE OrderDetails ADD CONSTRAINT Products_OrderDetails
+    FOREIGN KEY (ProductID)
+    REFERENCES Products (ProductID);
+
+ALTER TABLE Products ADD CONSTRAINT Products_ProductIngriedients
+    FOREIGN KEY (ProductID)
+    REFERENCES ProductIngriedients (ProductID);
+
 ALTER TABLE Reservation ADD CONSTRAINT Reservation_DiningTables
     FOREIGN KEY (DiningTableID)
     REFERENCES DiningTables (DiningTableID);
-
--- End of file.
-
