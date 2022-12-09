@@ -76,3 +76,81 @@ CREATE TABLE DiningTables
     CONSTRAINT NumberOfSeats_DiningTables_c CHECK (NumberOfSeats > 0),
     CONSTRAINT DiningTables_pk PRIMARY KEY (DiningTableID)
 );
+
+CREATE TABLE Invoices (
+    InvoiceID char(10)  NOT NULL,
+    OrderID char(10)  NOT NULL,
+    CONSTRAINT InvoiceID_Invoices_c CHECK (InvoiceID LIKE '^\d*$')
+    CONSTRAINT OrderID_Invoices_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT Invoices_pk PRIMARY KEY  (InvoiceID)
+);
+
+CREATE TABLE Menu (
+    MenuID char(10)  NOT NULL,
+    MenuName varchar(64)  NOT NULL,
+    FromTime datetime  NOT NULL,
+    ToTime datetime  NULL,
+    CONSTRAINT MenuID_Menu_c CHECK (MenuID LIKE '^\d*$')
+    CONSTRAINT Menu_DateCheck_c CHECK (FromTime < ToTime),
+    CONSTRAINT Menu_FromTime_c CHECK (FromTime < ISNULL(ToTime, GETDATE()))
+    CONSTRAINT Menu_pk PRIMARY KEY  (MenuID)
+);
+
+CREATE TABLE MenuDetails (
+    MenuID char(10)  NOT NULL,
+    ProductID varchar(10)  NOT NULL,
+    CONSTRAINT MenuID_c CHECK (MenuID LIKE '^\d*$')
+    CONSTRAINT ProductID_MenuDetails_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT MenuDetails_pk PRIMARY KEY  (MenuID)
+);
+
+CREATE TABLE OrderDetails (
+    OrderID char(10)  NOT NULL,
+    ProductID char(10)  NOT NULL,
+    Quantity int  NOT NULL,
+    CONSTRAINT OrderID_OrderDetails_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT ProductID_OrderDetails_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT Quantity_OrderDetails_c CHECK (Quantity >= 0)
+    CONSTRAINT OrderDetails_pk PRIMARY KEY  (OrderID)
+);
+
+CREATE TABLE Orders (
+    OrderID char(10)  NOT NULL,
+    CustomerID char(10)  NOT NULL,
+    OrderDate datetime  NOT NULL,
+    PaymentDate datetime  NULL,
+    PayViaID char(10) NULL,
+    OrderStatus varchar(32)  NOT NULL,
+    RestaurantEmployeeID char(10)  NOT NULL,
+
+    CONSTRAINT OrderID_Orders_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT CustomerID_Orders_c CHECK (CustomerID LIKE '^\d*$')
+    CONSTRAINT PayViaID_Orders_c CHECK (PayViaID LIKE '^\d*$')
+    CONSTRAINT RestaurantEmployeeID_Orders_c CHECK (RestaurantEmployeeID LIKE '^\d*$')
+
+    CONSTRAINT Orders_pk PRIMARY KEY  (OrderID)
+);
+
+CREATE TABLE PaymentMethod (
+    PaymentID char(10) NOT NULL,
+    PaymentName varchar(32) NOT NULL,
+    CONSTRAINT PaymentID_PaymentMethod_c CHECK (PaymentID LIKE '^\d*$')
+    CONSTRAINT PaymentMethod_pk PRIMARY KEY  (PaymentID)
+)
+
+CREATE TABLE ProductIngredients (
+    ProductID char(10)  NOT NULL,
+    IngredientID char(10)  NOT NULL,
+    CONSTRAINT ProductID_ProductIngredients_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT IngredientID_ProductIngredients_c CHECK (IngredientID LIKE '^\d*$')
+    CONSTRAINT ProductIngredients_pk PRIMARY KEY  (ProductID)
+);
+
+CREATE TABLE IngredientsWarehouse (
+    IngredientID char(10)  NOT NULL,
+    IngredientName varchar(64)  NOT NULL,
+    QuantityLeft int  NOT NULL,
+    CONSTRAINT IngredientID_IngredientsWarehouse_c CHECK (IngredientID LIKE '^\d*$')
+    CONSTRAINT QuantityLeft_IngredientsWarehous_c CHECK (QuantityLeft >= 0)
+    CONSTRAINT IngredientsWarehouse_pk PRIMARY KEY  (IngredientID)
+);
