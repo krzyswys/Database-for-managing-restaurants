@@ -149,49 +149,39 @@ CREATE TABLE IngredientsWarehouse (
 );
 
 CREATE TABLE Products (
-    ProductID char(10)  NOT NULL,
+    ProductID varchar(10)  NOT NULL,
     ProductName varchar(64)  NOT NULL,
-    CategoryID char(10)  NOT NULL,
-    UnitPrice int  NOT NULL DEFAULT 0,
-	CONSTRAINT properPrices CHECK ((UnitPrice >= 0)),
-	CONSTRAINT ProductID_Products CHECK (Products.ProductID LIKE '^\d*$'),
-    CONSTRAINT Products_pk PRIMARY KEY  (ProductID),
-	
-	
+    CategoryID varchar(10)  NOT NULL,
+    UnitPrice int  NOT NULL,
+    CONSTRAINT Products_pk PRIMARY KEY  (ProductID)
 );
 
 CREATE TABLE ProductPrices (
-    ProductID char(10)  NOT NULL,
+    ProductID varchar(10)  NOT NULL,
     FromTime datetime  NOT NULL,
-    ToTime datetime  NULL DEFAULT GETDATE(),
-    UnitPrice int  NOT NULL DEFAULT 0,
-	CONSTRAINT ProductID_ProductPrices CHECK (ProductPrices.ProductID LIKE '^\d*$'),
-	CONSTRAINT properProductPricesDate CHECK (FromTime < ISNULL(ToTime, GETDATE())),
+    ToTime datetime  NULL,
+    UnitPrice int  NOT NULL,
     CONSTRAINT ProductPrices_pk PRIMARY KEY  (ProductID)
 );
 
 CREATE TABLE Categories (
-    CategoryID char(10)  NOT NULL,
+    CategoryID varchar(10)  NOT NULL,
     CategoryName varchar(64)  NOT NULL,
-	CONSTRAINT CategoryID_Categories CHECK (Categories.CategoryID LIKE '^\d*$'),
     CONSTRAINT Categories_pk PRIMARY KEY  (CategoryID)
 );
 
 CREATE TABLE Reservation (
-    ReservationID char(10) NOT NULL,
+    ReservationID varchar(10) NOT NULL,
     FromTime datetime  NOT NULL,
     ToTime datetime  NOT NULL,
     Seats int  NOT NULL,
-    DiningTableID char(10)  NOT NULL,
-    OrderID char(10)  NOT NULL,
-	CONSTRAINT ReservationID_Reservation CHECK (Reservation.ReservationID LIKE '^\d*$'),
-	CONSTRAINT maxSeats_Reservation CHECK (Seats <= 20 AND Seats > 0),
-	CONSTRAINT properReservationDate_Reservation CHECK (FromTime < ToTime),
+    DiningTableID varchar(10)  NOT NULL,
+    OrderID varchar(10)  NOT NULL,
     CONSTRAINT Reservation_pk PRIMARY KEY  (ReservationID)
 );
 
 CREATE TABLE RestaurantEmployees (
-    RestaurantEmployeeID char(10)  NOT NULL,
+    RestaurantEmployeeID varchar(10)  NOT NULL,
     FirstName varchar(64)  NOT NULL,
     LastName varchar(64)  NOT NULL,
     Occupation varchar(64)  NOT NULL,
@@ -199,14 +189,8 @@ CREATE TABLE RestaurantEmployees (
     Country varchar(64)  NOT NULL,
     City varchar(64)  NOT NULL,
     PostCode varchar(16)  NOT NULL,
-    Phone char(9)  NOT NULL,
+    Phone varchar(16)  NOT NULL,
     Email varchar(64)  NOT NULL,
-	CONSTRAINT RestaurantEmployeeID_RestaurantEmployees CHECK (RestaurantEmployees.RestaurantEmployeeID LIKE '^\d*$'),
-	CONSTRAINT cityName_RestaurantEmployees CHECK ((City LIKE '^[A-Z]')),
-	CONSTRAINT countryName_RestaurantEmployees CHECK ((Country LIKE '^[A-Z]')),
-	CONSTRAINT nameValidation_RestaurantEmployees CHECK ((FirstName LIKE '^[A-Z][a-z]*$') AND (LastName LIKE '^[A-Z][a-z]*$')),
-	CONSTRAINT phoneValidation_RestaurantEmployees CHECK (Phone LIKE '^[0-9]*$'),
-	CONSTRAINT emailValidation_RestaurantEmployees CHECK ((Email LIKE '%@%.%')),
     CONSTRAINT RestaurantEmployees_pk PRIMARY KEY  (RestaurantEmployeeID)
 );
 
@@ -215,27 +199,20 @@ CREATE TABLE EmployeesSalary (
     FromTime datetime  NOT NULL,
     ToTime datetime  NULL,
     Salary int NOT NULL,
-	CONSTRAINT RestaurantEmployeeID_EmployeesSalary CHECK (EmployeesSalary.RestaurantEmployeeID LIKE '^\d*$'),
-	CONSTRAINT salaryConstraint_EmployeesSalary CHECK (Salary >= 0),
-	CONSTRAINT properReservationDate_EmployeesSalary CHECK (FromTime < ISNULL(ToTime, GETDATE())),
-    CONSTRAINT EmployeesSalary_pk_EmployeesSalary PRIMARY KEY  (RestaurantEmployeeID)
+    CONSTRAINT EmployeesSalary_pk PRIMARY KEY  (RestaurantEmployeeID)
 );
 
 CREATE TABLE Takeaway (
-    OrderID char(10)  NOT NULL,
-    PickupDate datetime NULL,
-	CONSTRAINT orderID_Takeaway CHECK (Takeaway.OrderID LIKE '^\d*$'),
-	
+    OrderID varchar(10)  NOT NULL,
+    PickupDate datetime  NOT NULL,
     CONSTRAINT Takeaway_pk PRIMARY KEY  (OrderID)
 );
 
 CREATE TABLE VariablesData (
     FromTime datetime  NOT NULL,
-    ToTime datetime  NULL,
+    ToTime datetime   NULL,
     VariableType varchar(3)  NOT NULL,
     VariableValue int  NOT NULL
-	CONSTRAINT validationDate_VariablesData CHECK (FromTime < ISNULL(ToTime, GETDATE())),
-	CONSTRAINT variableValueAboveZero_VariablesData CHECK (VariableValue >= 0)
 );
 
 -- Foreign Keys
