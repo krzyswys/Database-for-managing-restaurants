@@ -1,155 +1,190 @@
 -- Tables
 CREATE TABLE Companies (
-    CompanyID varchar(10) NOT NULL,
-    CustomerID varchar(10)  NOT NULL,
+    CompanyID char(10) NOT NULL,
+    CustomerID char(10)  NOT NULL,
     CompanyName varchar(64)  NOT NULL,
-    NIP varchar(10)  NOT NULL,
+    NIP char(10)  NOT NULL,
+    CONSTRAINT CompanyID_Companies_c CHECK (CompanyID LIKE '^\d*$'),
+    CONSTRAINT CustomerID_Companies_c CHECK (CustomerID LIKE '^\d*$'),
+    CONSTRAINT NIP_Companies_c CHECK (NIP LIKE '^\d*$'),
     CONSTRAINT Companies_pk PRIMARY KEY  (CompanyID)
 );
 
 CREATE TABLE CompanyEmployees (
-    CompanyEmployeeID varchar(10)  NOT NULL,
-    PersonID varchar(10)  NOT NULL,
-    CompanyID varchar(10)  NOT NULL,
+    CompanyEmployeeID char(10)  NOT NULL,
+    PersonID char(10)  NOT NULL,
+    CompanyID char(10)  NOT NULL,
+    CONSTRAINT CompanyEmployeeID_CompanyEmployees_c CHECK (CompanyEmployeeID LIKE '^\d*$'),
+    CONSTRAINT PersonID_CompanyEmployees_c CHECK (PersonID LIKE '^\d*$'),
+    CONSTRAINT CompanyID_CompanyEmployees_c CHECK (CompanyID LIKE '^\d*$'),
     CONSTRAINT CompanyEmployees_pk PRIMARY KEY  (CompanyEmployeeID)
 );
 
 CREATE TABLE CompanyReservationParticipants (
-    ReservationID varchar(10)  NOT NULL,
-    CompanyEmployeeID varchar(10)  NOT NULL,
+    ReservationID char(10)  NOT NULL,
+    CompanyEmployeeID char(10)  NOT NULL,
+    CONSTRAINT ReservationID_CompanyReservationParticipants_c CHECK (ReservationID LIKE '^\d*$'),
+    CONSTRAINT CompanyEmployeeID_CompanyReservationParticipants_c CHECK (CompanyEmployeeID LIKE '^\d*$'),
     CONSTRAINT CompanyReservationParticipants_pk PRIMARY KEY  (ReservationID)
 );
 
 CREATE TABLE CustomersPersonalData (
-    PersonID varchar(10)  NOT NULL,
+    PersonID char(10)  NOT NULL,
     FirstName varchar(64)  NOT NULL,
     LastName varchar(64)  NOT NULL,
+    CONSTRAINT PersonID_CustomersPersonalData_c CHECK (PersonID LIKE '^\d*$'),
+    CONSTRAINT FirstName_CustomersPersonalData_c CHECK (FirstName LIKE '^[A-Z][a-z]*$'),
+    CONSTRAINT LastName_CustomersPersonalData_c CHECK (LastName LIKE '^[A-Z][a-z]*$'),
     CONSTRAINT CustomersPersonalData_pk PRIMARY KEY  (PersonID)
 );
 
 CREATE TABLE Customers (
-    CustomerID varchar(10)  NOT NULL,
+    CustomerID char(10)  NOT NULL,
     Street varchar(64)  NOT NULL,
     Country varchar(64)  NOT NULL,
     City varchar(64)  NOT NULL,
     PostCode varchar(16)  NOT NULL,
     Phone varchar(16)  NOT NULL,
     Email varchar(64)  NOT NULL,
+    CONSTRAINT CustomerID_Customers_c CHECK (CustomerID LIKE '^\d*$'),
+    CONSTRAINT Country_Customers_c CHECK (Country LIKE '^[A-Z]'),
+    CONSTRAINT City_Customers_c CHECK (City LIKE '^[A-Z]'),
+    CONSTRAINT Phone_Customers_c CHECK (Phone LIKE '^[0-9]*'),
+    CONSTRAINT Email_Customers_c CHECK (Email LIKE '%@%.%'),
     CONSTRAINT Customers_pk PRIMARY KEY  (CustomerID)
 );
 
 CREATE TABLE IndividualCustomers (
-    CustomerID varchar(10)  NOT NULL,
-    PersonID varchar(10)  NOT NULL,
+    CustomerID char(10)  NOT NULL,
+    PersonID char(10)  NOT NULL,
+    CONSTRAINT CustomerID_IndividualCustomers_c CHECK (CustomerID LIKE '^\d*$'),
+    CONSTRAINT PersonID_IndividualCustomers_c CHECK (PersonID LIKE '^\d*$'),
     CONSTRAINT IndividualCustomers_pk PRIMARY KEY  (CustomerID)
 );
 
 CREATE TABLE DiningTables (
-    DiningTableID varchar(10)  NOT NULL,
+    DiningTableID char(10)  NOT NULL,
     NumberOfSeats int  NOT NULL,
+    CONSTRAINT DiningTableID_DiningTables_c CHECK (DiningTableID LIKE '^\d*$'),
+    CONSTRAINT NumberOfSeats_DiningTables_c CHECK (NumberOfSeats > 0),
     CONSTRAINT DiningTables_pk PRIMARY KEY  (DiningTableID)
 );
 
 CREATE TABLE Invoices (
-    InvoiceID varchar(10)  NOT NULL,
-    OrderID varchar(10)  NOT NULL,
+    InvoiceID char(10)  NOT NULL,
+    OrderID char(10)  NOT NULL,
+    CONSTRAINT InvoiceID_Invoices_c CHECK (InvoiceID LIKE '^\d*$')
+    CONSTRAINT OrderID_Invoices_c CHECK (OrderID LIKE '^\d*$')
     CONSTRAINT Invoices_pk PRIMARY KEY  (InvoiceID)
 );
 
 CREATE TABLE Menu (
-    MenuID varchar(10)  NOT NULL,
+    MenuID char(10)  NOT NULL,
     MenuName varchar(64)  NOT NULL,
     FromTime datetime  NOT NULL,
     ToTime datetime  NULL,
+    CONSTRAINT MenuID_Menu_c CHECK (MenuID LIKE '^\d*$')
+    CONSTRAINT Menu_DateCheck_c CHECK (FromTime < ToTime),
+    CONSTRAINT Menu_FromTime_c CHECK (FromTime < ISNULL(ToTime, GETDATE()))
     CONSTRAINT Menu_pk PRIMARY KEY  (MenuID)
 );
 
 CREATE TABLE MenuDetails (
-    MenuID varchar(10)  NOT NULL,
+    MenuID char(10)  NOT NULL,
     ProductID varchar(10)  NOT NULL,
+    CONSTRAINT MenuID_c CHECK (MenuID LIKE '^\d*$')
+    CONSTRAINT ProductID_MenuDetails_c CHECK (ProductID LIKE '^\d*$')
     CONSTRAINT MenuDetails_pk PRIMARY KEY  (MenuID)
 );
 
 CREATE TABLE OrderDetails (
-    OrderID varchar(10)  NOT NULL,
-    ProductID varchar(10)  NOT NULL,
+    OrderID char(10)  NOT NULL,
+    ProductID char(10)  NOT NULL,
     Quantity int  NOT NULL,
+    CONSTRAINT OrderID_OrderDetails_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT ProductID_OrderDetails_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT Quantity_OrderDetails_c CHECK (Quantity >= 0)
     CONSTRAINT OrderDetails_pk PRIMARY KEY  (OrderID)
 );
 
 CREATE TABLE Orders (
-    OrderID varchar(10)  NOT NULL,
-    CustomerID varchar(10)  NOT NULL,
+    OrderID char(10)  NOT NULL,
+    CustomerID char(10)  NOT NULL,
     OrderDate datetime  NOT NULL,
     PaymentDate datetime  NULL,
-    PayVia varchar(1) NULL,
+    PayViaID char(10) NULL,
     OrderStatus varchar(32)  NOT NULL,
-    RestaurantEmployeeID varchar(10)  NOT NULL,
+    RestaurantEmployeeID char(10)  NOT NULL,
+
+    CONSTRAINT OrderID_Orders_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT CustomerID_Orders_c CHECK (CustomerID LIKE '^\d*$')
+    CONSTRAINT PayViaID_Orders_c CHECK (PayViaID LIKE '^\d*$')
+    CONSTRAINT RestaurantEmployeeID_Orders_c CHECK (RestaurantEmployeeID LIKE '^\d*$')
+
     CONSTRAINT Orders_pk PRIMARY KEY  (OrderID)
 );
 
 CREATE TABLE PaymentMethod (
-    PaymentID varchar(10) NOT NULL,
+    PaymentID char(10) NOT NULL,
     PaymentName varchar(32) NOT NULL,
+    CONSTRAINT PaymentID_PaymentMethod_c CHECK (PaymentID LIKE '^\d*$')
     CONSTRAINT PaymentMethod_pk PRIMARY KEY  (PaymentID)
 )
 
 CREATE TABLE ProductIngredients (
-    ProductID varchar(10)  NOT NULL,
-    IngredientID varchar(10)  NOT NULL,
+    ProductID char(10)  NOT NULL,
+    IngredientID char(10)  NOT NULL,
+    CONSTRAINT ProductID_ProductIngredients_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT IngredientID_ProductIngredients_c CHECK (IngredientID LIKE '^\d*$')
     CONSTRAINT ProductIngredients_pk PRIMARY KEY  (ProductID)
 );
 
 CREATE TABLE IngredientsWarehouse (
-    IngredientID varchar(10)  NOT NULL,
+    IngredientID char(10)  NOT NULL,
     IngredientName varchar(64)  NOT NULL,
     QuantityLeft int  NOT NULL,
+    CONSTRAINT IngredientID_IngredientsWarehouse_c CHECK (IngredientID LIKE '^\d*$')
+    CONSTRAINT QuantityLeft_IngredientsWarehous_c CHECK (QuantityLeft >= 0)
     CONSTRAINT IngredientsWarehouse_pk PRIMARY KEY  (IngredientID)
 );
 
 CREATE TABLE Products (
-    ProductID char(10)  NOT NULL,
+    ProductID varchar(10)  NOT NULL,
     ProductName varchar(64)  NOT NULL,
     CategoryID char(10)  NOT NULL,
     UnitPrice int  NOT NULL DEFAULT 0,
-	CONSTRAINT properPrices CHECK ((UnitPrice >= 0)),
-	CONSTRAINT ProductID_Products CHECK (Products.ProductID LIKE '^\d*$'),
+	  CONSTRAINT properPrices CHECK ((UnitPrice >= 0)),
+	  CONSTRAINT ProductID_Products CHECK (Products.ProductID LIKE '^\d*$'),
     CONSTRAINT Products_pk PRIMARY KEY  (ProductID),
 	
 );
 
 CREATE TABLE ProductPrices (
-    ProductID char(10)  NOT NULL,
+    ProductID varchar(10)  NOT NULL,
     FromTime datetime  NOT NULL,
-    ToTime datetime  NULL DEFAULT GETDATE(),
-    UnitPrice int  NOT NULL DEFAULT 0,
-	CONSTRAINT ProductID_ProductPrices CHECK (ProductPrices.ProductID LIKE '^\d*$'),
-	CONSTRAINT properProductPricesDate CHECK (FromTime < ISNULL(ToTime, GETDATE())),
+    ToTime datetime  NULL,
+    UnitPrice int  NOT NULL,
     CONSTRAINT ProductPrices_pk PRIMARY KEY  (ProductID)
 );
 
 CREATE TABLE Categories (
-    CategoryID char(10)  NOT NULL,
+    CategoryID varchar(10)  NOT NULL,
     CategoryName varchar(64)  NOT NULL,
-	CONSTRAINT CategoryID_Categories CHECK (Categories.CategoryID LIKE '^\d*$'),
     CONSTRAINT Categories_pk PRIMARY KEY  (CategoryID)
 );
 
 CREATE TABLE Reservation (
-    ReservationID char(10) NOT NULL,
+    ReservationID varchar(10) NOT NULL,
     FromTime datetime  NOT NULL,
     ToTime datetime  NOT NULL,
     Seats int  NOT NULL,
-    DiningTableID char(10)  NOT NULL,
-    OrderID char(10)  NOT NULL,
-	CONSTRAINT ReservationID_Reservation CHECK (Reservation.ReservationID LIKE '^\d*$'),
-	CONSTRAINT maxSeats_Reservation CHECK (Seats <= 20 AND Seats > 0),
-	CONSTRAINT properReservationDate_Reservation CHECK (FromTime < ToTime),
+    DiningTableID varchar(10)  NOT NULL,
+    OrderID varchar(10)  NOT NULL,
     CONSTRAINT Reservation_pk PRIMARY KEY  (ReservationID)
 );
 
 CREATE TABLE RestaurantEmployees (
-    RestaurantEmployeeID char(10)  NOT NULL,
+    RestaurantEmployeeID varchar(10)  NOT NULL,
     FirstName varchar(64)  NOT NULL,
     LastName varchar(64)  NOT NULL,
     Occupation varchar(64)  NOT NULL,
@@ -157,14 +192,8 @@ CREATE TABLE RestaurantEmployees (
     Country varchar(64)  NOT NULL,
     City varchar(64)  NOT NULL,
     PostCode varchar(16)  NOT NULL,
-    Phone char(9)  NOT NULL,
+    Phone varchar(16)  NOT NULL,
     Email varchar(64)  NOT NULL,
-	CONSTRAINT RestaurantEmployeeID_RestaurantEmployees CHECK (RestaurantEmployees.RestaurantEmployeeID LIKE '^\d*$'),
-	CONSTRAINT cityName_RestaurantEmployees CHECK ((City LIKE '^[A-Z]')),
-	CONSTRAINT countryName_RestaurantEmployees CHECK ((Country LIKE '^[A-Z]')),
-	CONSTRAINT nameValidation_RestaurantEmployees CHECK ((FirstName LIKE '^[A-Z][a-z]*$') AND (LastName LIKE '^[A-Z][a-z]*$')),
-	CONSTRAINT phoneValidation_RestaurantEmployees CHECK (Phone LIKE '^[0-9]*$'),
-	CONSTRAINT emailValidation_RestaurantEmployees CHECK ((Email LIKE '%@%.%')),
     CONSTRAINT RestaurantEmployees_pk PRIMARY KEY  (RestaurantEmployeeID)
 );
 
@@ -173,27 +202,20 @@ CREATE TABLE EmployeesSalary (
     FromTime datetime  NOT NULL,
     ToTime datetime  NULL,
     Salary int NOT NULL,
-	CONSTRAINT RestaurantEmployeeID_EmployeesSalary CHECK (EmployeesSalary.RestaurantEmployeeID LIKE '^\d*$'),
-	CONSTRAINT salaryConstraint_EmployeesSalary CHECK (Salary >= 0),
-	CONSTRAINT properReservationDate_EmployeesSalary CHECK (FromTime < ISNULL(ToTime, GETDATE())),
-    CONSTRAINT EmployeesSalary_pk_EmployeesSalary PRIMARY KEY  (RestaurantEmployeeID)
+    CONSTRAINT EmployeesSalary_pk PRIMARY KEY  (RestaurantEmployeeID)
 );
 
 CREATE TABLE Takeaway (
-    OrderID char(10)  NOT NULL,
-    PickupDate datetime NULL,
-	CONSTRAINT orderID_Takeaway CHECK (Takeaway.OrderID LIKE '^\d*$'),
-	
+    OrderID varchar(10)  NOT NULL,
+    PickupDate datetime  NOT NULL,
     CONSTRAINT Takeaway_pk PRIMARY KEY  (OrderID)
 );
 
 CREATE TABLE VariablesData (
     FromTime datetime  NOT NULL,
-    ToTime datetime  NULL,
+    ToTime datetime   NULL,
     VariableType varchar(3)  NOT NULL,
     VariableValue int  NOT NULL
-	CONSTRAINT validationDate_VariablesData CHECK (FromTime < ISNULL(ToTime, GETDATE())),
-	CONSTRAINT variableValueAboveZero_VariablesData CHECK (VariableValue >= 0)
 );
 
 -- Foreign Keys
