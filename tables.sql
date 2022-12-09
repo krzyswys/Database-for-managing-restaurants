@@ -116,7 +116,6 @@ CREATE TABLE Products (
 	CONSTRAINT ProductID_Products CHECK (Products.ProductID LIKE '^\d*$'),
     CONSTRAINT Products_pk PRIMARY KEY  (ProductID),
 	
-	
 );
 
 CREATE TABLE ProductPrices (
