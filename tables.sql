@@ -1,6 +1,4 @@
-
 -- Tables
-
 CREATE TABLE Companies (
     CompanyID varchar(10) NOT NULL,
     CustomerID varchar(10)  NOT NULL,
@@ -84,10 +82,17 @@ CREATE TABLE Orders (
     CustomerID varchar(10)  NOT NULL,
     OrderDate datetime  NOT NULL,
     PaymentDate datetime  NULL,
+    PayVia varchar(1) NULL,
     OrderStatus varchar(32)  NOT NULL,
     RestaurantEmployeeID varchar(10)  NOT NULL,
     CONSTRAINT Orders_pk PRIMARY KEY  (OrderID)
 );
+
+CREATE TABLE PaymentMethod (
+    PaymentID varchar(10) NOT NULL,
+    PaymentName varchar(32) NOT NULL,
+    CONSTRAINT PaymentMethod_pk PRIMARY KEY  (PaymentID)
+)
 
 CREATE TABLE ProductIngredients (
     ProductID varchar(10)  NOT NULL,
@@ -108,6 +113,14 @@ CREATE TABLE Products (
     CategoryID varchar(10)  NOT NULL,
     UnitPrice int  NOT NULL,
     CONSTRAINT Products_pk PRIMARY KEY  (ProductID)
+);
+
+CREATE TABLE ProductPrices (
+    ProductID varchar(10)  NOT NULL,
+    FromTime datetime  NOT NULL,
+    ToTime datetime  NULL,
+    UnitPrice int  NOT NULL,
+    CONSTRAINT ProductPrices_pk PRIMARY KEY  (ProductID)
 );
 
 CREATE TABLE Categories (
@@ -162,7 +175,6 @@ CREATE TABLE VariablesData (
 );
 
 -- Foreign Keys
-
 ALTER TABLE Products ADD CONSTRAINT Categories_Products
     FOREIGN KEY (CategoryID)
     REFERENCES Categories (CategoryID);
@@ -246,3 +258,11 @@ ALTER TABLE ProductIngredients ADD CONSTRAINT Products_ProductIngredients
 ALTER TABLE Reservation ADD CONSTRAINT Reservation_DiningTables
     FOREIGN KEY (DiningTableID)
     REFERENCES DiningTables (DiningTableID);
+
+ALTER TABLE ProductPrices ADD CONSTRAINT ProductPrices_Products
+    FOREIGN KEY (ProductID)
+    REFERENCES Products (ProductID);
+
+ALTER TABLE Orders ADD CONSTRAINT Orders_PaymentMethod
+    FOREIGN KEY (PayVia)
+    REFERENCES PaymentMethod (PaymentID);
