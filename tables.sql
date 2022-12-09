@@ -65,6 +65,7 @@ CREATE TABLE Menu (
     ToTime datetime  NULL,
     CONSTRAINT MenuID_Menu_c CHECK (MenuID LIKE '^\d*$')
     CONSTRAINT Menu_DateCheck_c CHECK (FromTime < ToTime),
+    CONSTRAINT Menu_FromTime_c CHECK (FromTime < ISNULL(ToTime, GETDATE()))
     CONSTRAINT Menu_pk PRIMARY KEY  (MenuID)
 );
 
