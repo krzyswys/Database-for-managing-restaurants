@@ -114,8 +114,7 @@ CREATE TABLE Products (
     UnitPrice int  NOT NULL DEFAULT 0,
 	CONSTRAINT properPrices CHECK ((UnitPrice >= 0)),
 	CONSTRAINT ProductID_Products CHECK (Products.ProductID LIKE '^\d*$'),
-    CONSTRAINT Products_pk PRIMARY KEY  (ProductID),
-	
+    CONSTRAINT Products_pk PRIMARY KEY  (ProductID)
 );
 
 CREATE TABLE ProductPrices (
