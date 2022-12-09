@@ -49,12 +49,12 @@ CREATE TABLE DiningTables (
     NumberOfSeats int  NOT NULL,
     CONSTRAINT DiningTables_pk PRIMARY KEY  (DiningTableID)
 );
-----------------------------------------------------------------------------------
+
 CREATE TABLE Invoices (
     InvoiceID char(10)  NOT NULL,
     OrderID char(10)  NOT NULL,
-    CONSTRAINT numericalInvoiceID_Invoices CHECK (InvoiceID LIKE '^\d*$')
-    CONSTRAINT numericalOrderID_Invoices CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT InvoiceID_Invoices_c CHECK (InvoiceID LIKE '^\d*$')
+    CONSTRAINT OrderID_Invoices_c CHECK (OrderID LIKE '^\d*$')
     CONSTRAINT Invoices_pk PRIMARY KEY  (InvoiceID)
 );
 
@@ -63,16 +63,16 @@ CREATE TABLE Menu (
     MenuName varchar(64)  NOT NULL,
     FromTime datetime  NOT NULL,
     ToTime datetime  NULL,
-    CONSTRAINT numericalMenuID_Menu CHECK (MenuID LIKE '^\d*$')
-    CONSTRAINT ***_Menu CHECK (FromTime < ToTime),
+    CONSTRAINT MenuID_Menu_c CHECK (MenuID LIKE '^\d*$')
+    CONSTRAINT Menu_DateCheck_c CHECK (FromTime < ToTime),
     CONSTRAINT Menu_pk PRIMARY KEY  (MenuID)
 );
 
 CREATE TABLE MenuDetails (
     MenuID char(10)  NOT NULL,
     ProductID varchar(10)  NOT NULL,
-    CONSTRAINT numericalMenuID CHECK (MenuID LIKE '^\d*$')
-    CONSTRAINT numericalProductID_MenuDetails CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT MenuID_c CHECK (MenuID LIKE '^\d*$')
+    CONSTRAINT ProductID_MenuDetails_c CHECK (ProductID LIKE '^\d*$')
     CONSTRAINT MenuDetails_pk PRIMARY KEY  (MenuID)
 );
 
@@ -80,9 +80,9 @@ CREATE TABLE OrderDetails (
     OrderID char(10)  NOT NULL,
     ProductID char(10)  NOT NULL,
     Quantity int  NOT NULL,
-    CONSTRAINT numericalOrderID_OrderDetails CHECK (OrderID LIKE '^\d*$')
-    CONSTRAINT numericalProductID_OrderDetails CHECK (ProductID LIKE '^\d*$')
-    CONSTRAINT numericalQuantity_OrderDetails CHECK (Quantity >= 0)
+    CONSTRAINT OrderID_OrderDetails_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT ProductID_OrderDetails_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT Quantity_OrderDetails_c CHECK (Quantity >= 0)
     CONSTRAINT OrderDetails_pk PRIMARY KEY  (OrderID)
 );
 
@@ -95,10 +95,10 @@ CREATE TABLE Orders (
     OrderStatus varchar(32)  NOT NULL,
     RestaurantEmployeeID char(10)  NOT NULL,
 
-    CONSTRAINT numericalOrderID_Orders CHECK (OrderID LIKE '^\d*$')
-    CONSTRAINT numericalCustomerID_Orders CHECK (CustomerID LIKE '^\d*$')
-    CONSTRAINT numericalPayViaID_Orders CHECK (PayViaID LIKE '^\d*$')
-    CONSTRAINT numericalRestaurantEmployeeID_Orders CHECK (RestaurantEmployeeID LIKE '^\d*$')
+    CONSTRAINT OrderID_Orders_c CHECK (OrderID LIKE '^\d*$')
+    CONSTRAINT CustomerID_Orders_c CHECK (CustomerID LIKE '^\d*$')
+    CONSTRAINT PayViaID_Orders_c CHECK (PayViaID LIKE '^\d*$')
+    CONSTRAINT RestaurantEmployeeID_Orders_c CHECK (RestaurantEmployeeID LIKE '^\d*$')
 
     CONSTRAINT Orders_pk PRIMARY KEY  (OrderID)
 );
@@ -106,15 +106,15 @@ CREATE TABLE Orders (
 CREATE TABLE PaymentMethod (
     PaymentID char(10) NOT NULL,
     PaymentName varchar(32) NOT NULL,
-    CONSTRAINT numericalPaymentID_PaymentMethod CHECK (PaymentID LIKE '^\d*$')
+    CONSTRAINT PaymentID_PaymentMethod_c CHECK (PaymentID LIKE '^\d*$')
     CONSTRAINT PaymentMethod_pk PRIMARY KEY  (PaymentID)
 )
 
 CREATE TABLE ProductIngredients (
     ProductID char(10)  NOT NULL,
     IngredientID char(10)  NOT NULL,
-    CONSTRAINT numericalProductID_ProductIngredients CHECK (ProductID LIKE '^\d*$')
-    CONSTRAINT numericalIngredientID_ProductIngredients CHECK (IngredientID LIKE '^\d*$')
+    CONSTRAINT ProductID_ProductIngredients_c CHECK (ProductID LIKE '^\d*$')
+    CONSTRAINT IngredientID_ProductIngredients_c CHECK (IngredientID LIKE '^\d*$')
     CONSTRAINT ProductIngredients_pk PRIMARY KEY  (ProductID)
 );
 
@@ -122,11 +122,11 @@ CREATE TABLE IngredientsWarehouse (
     IngredientID char(10)  NOT NULL,
     IngredientName varchar(64)  NOT NULL,
     QuantityLeft int  NOT NULL,
-    CONSTRAINT numericalIngredientID_IngredientsWarehouse CHECK (ProductID LIKE '^\d*$')
-    CONSTRAINT numericalQuantityLeft_IngredientsWarehous CHECK (QuantityLeft >= 0)
+    CONSTRAINT IngredientID_IngredientsWarehouse_c CHECK (IngredientID LIKE '^\d*$')
+    CONSTRAINT QuantityLeft_IngredientsWarehous_c CHECK (QuantityLeft >= 0)
     CONSTRAINT IngredientsWarehouse_pk PRIMARY KEY  (IngredientID)
 );
-----------------------------------------------------------------------------------
+
 CREATE TABLE Products (
     ProductID varchar(10)  NOT NULL,
     ProductName varchar(64)  NOT NULL,
