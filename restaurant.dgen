@@ -35,7 +35,7 @@
         <RowsToGenerate>0</RowsToGenerate>
         <PopulationDetails>
           <PopulationType>RowsCount</PopulationType>
-          <RowsCount>1000</RowsCount>
+          <RowsCount>10</RowsCount>
           <LookupProportion>30</LookupProportion>
           <ProportionOfExistingData>10</ProportionOfExistingData>
           <TimeTicksToPopulate>100000000</TimeTicksToPopulate>
@@ -238,7 +238,7 @@
         <RowsToGenerate>0</RowsToGenerate>
         <PopulationDetails>
           <PopulationType>RowsCount</PopulationType>
-          <RowsCount>1000</RowsCount>
+          <RowsCount>10</RowsCount>
           <LookupProportion>30</LookupProportion>
           <ProportionOfExistingData>10</ProportionOfExistingData>
           <TimeTicksToPopulate>100000000</TimeTicksToPopulate>
@@ -569,7 +569,7 @@
         <RowsToGenerate>0</RowsToGenerate>
         <PopulationDetails>
           <PopulationType>RowsCount</PopulationType>
-          <RowsCount>1000</RowsCount>
+          <RowsCount>20</RowsCount>
           <LookupProportion>30</LookupProportion>
           <ProportionOfExistingData>10</ProportionOfExistingData>
           <TimeTicksToPopulate>100000000</TimeTicksToPopulate>
@@ -863,7 +863,7 @@
         <RowsToGenerate>0</RowsToGenerate>
         <PopulationDetails>
           <PopulationType>RowsCount</PopulationType>
-          <RowsCount>1000</RowsCount>
+          <RowsCount>50</RowsCount>
           <LookupProportion>30</LookupProportion>
           <ProportionOfExistingData>10</ProportionOfExistingData>
           <TimeTicksToPopulate>100000000</TimeTicksToPopulate>
@@ -873,44 +873,62 @@
         <Column Name="MenuID">
           <Checked>true</Checked>
           <DataType>char</DataType>
-          <GeneratorOptions xsi:type="ForeignKeyGeneratorOptions">
-            <Unique>true</Unique>
-            <IsAlwaysUnique>false</IsAlwaysUnique>
-            <AllowNulls>false</AllowNulls>
-            <NullProportion>0</NullProportion>
+          <GeneratorOptions xsi:type="SqlDatabaseTableValuesGeneratorOptions">
+            <AllowEmptyStrings>false</AllowEmptyStrings>
+            <EmptyStringProportion>10</EmptyStringProportion>
+            <ProviderId>aa8afe9c-7d62-4564-b477-c12e62e0f440</ProviderId>
+            <ConnectionString>Data Source=(localdb)\Local;Initial Catalog=restaurant;Integrated Security=False</ConnectionString>
+            <DatabaseName>restaurant</DatabaseName>
+            <ColumnName>MenuID</ColumnName>
+            <IsValidColumn>true</IsValidColumn>
+            <InvalidMessage />
+            <ColumnExists>true</ColumnExists>
             <ValueDistributionMode>Seed</ValueDistributionMode>
             <SeedValue>24</SeedValue>
-            <RepeatValues>false</RepeatValues>
-            <FromTimes>1</FromTimes>
-            <ToTimes>10</ToTimes>
-            <ExcludeValues>false</ExcludeValues>
-            <ExclusionValuesPercent>1</ExclusionValuesPercent>
+            <IsLoop>true</IsLoop>
+            <AllowNulls>false</AllowNulls>
+            <NullProportion>0</NullProportion>
+            <IsTable>true</IsTable>
+            <TableName>dbo.Menu</TableName>
+            <TableExists>true</TableExists>
+            <Unique>true</Unique>
+            <IsAlwaysUnique>false</IsAlwaysUnique>
+            <ColumnDataType>char(10)</ColumnDataType>
           </GeneratorOptions>
-          <GeneratorType>ForeignKeyGenerator</GeneratorType>
-          <GeneratorName>Foreign Key (auto assigned)</GeneratorName>
-          <GeneratorDescription>references a column from parent table</GeneratorDescription>
+          <GeneratorType>SqlTableValuesGenerator</GeneratorType>
+          <GeneratorName>Table or View</GeneratorName>
+          <GeneratorDescription>loads column data of a compatible type from a table or view</GeneratorDescription>
           <HasForeignKey>true</HasForeignKey>
           <Length>10</Length>
         </Column>
         <Column Name="ProductID">
           <Checked>true</Checked>
           <DataType>char</DataType>
-          <GeneratorOptions xsi:type="ForeignKeyGeneratorOptions">
-            <Unique>false</Unique>
-            <IsAlwaysUnique>false</IsAlwaysUnique>
-            <AllowNulls>false</AllowNulls>
-            <NullProportion>0</NullProportion>
+          <GeneratorOptions xsi:type="SqlDatabaseTableValuesGeneratorOptions">
+            <AllowEmptyStrings>false</AllowEmptyStrings>
+            <EmptyStringProportion>10</EmptyStringProportion>
+            <ProviderId>aa8afe9c-7d62-4564-b477-c12e62e0f440</ProviderId>
+            <ConnectionString>Data Source=(localdb)\Local;Initial Catalog=restaurant;Integrated Security=False</ConnectionString>
+            <DatabaseName>restaurant</DatabaseName>
+            <ColumnName>ProductID</ColumnName>
+            <IsValidColumn>true</IsValidColumn>
+            <InvalidMessage />
+            <ColumnExists>true</ColumnExists>
             <ValueDistributionMode>Seed</ValueDistributionMode>
             <SeedValue>25</SeedValue>
-            <RepeatValues>false</RepeatValues>
-            <FromTimes>1</FromTimes>
-            <ToTimes>10</ToTimes>
-            <ExcludeValues>false</ExcludeValues>
-            <ExclusionValuesPercent>1</ExclusionValuesPercent>
+            <IsLoop>true</IsLoop>
+            <AllowNulls>false</AllowNulls>
+            <NullProportion>0</NullProportion>
+            <IsTable>true</IsTable>
+            <TableName>dbo.Products</TableName>
+            <TableExists>true</TableExists>
+            <Unique>false</Unique>
+            <IsAlwaysUnique>false</IsAlwaysUnique>
+            <ColumnDataType>char(10)</ColumnDataType>
           </GeneratorOptions>
-          <GeneratorType>ForeignKeyGenerator</GeneratorType>
-          <GeneratorName>Foreign Key (auto assigned)</GeneratorName>
-          <GeneratorDescription>references a column from parent table</GeneratorDescription>
+          <GeneratorType>SqlTableValuesGenerator</GeneratorType>
+          <GeneratorName>Table or View</GeneratorName>
+          <GeneratorDescription>loads column data of a compatible type from a table or view</GeneratorDescription>
           <HasForeignKey>true</HasForeignKey>
           <Length>10</Length>
         </Column>
@@ -1050,7 +1068,7 @@
         <RowsToGenerate>0</RowsToGenerate>
         <PopulationDetails>
           <PopulationType>RowsCount</PopulationType>
-          <RowsCount>1000</RowsCount>
+          <RowsCount>50</RowsCount>
           <LookupProportion>30</LookupProportion>
           <ProportionOfExistingData>10</ProportionOfExistingData>
           <TimeTicksToPopulate>100000000</TimeTicksToPopulate>
@@ -1060,22 +1078,31 @@
         <Column Name="ProductID">
           <Checked>true</Checked>
           <DataType>char</DataType>
-          <GeneratorOptions xsi:type="ForeignKeyGeneratorOptions">
-            <Unique>true</Unique>
-            <IsAlwaysUnique>false</IsAlwaysUnique>
-            <AllowNulls>false</AllowNulls>
-            <NullProportion>0</NullProportion>
+          <GeneratorOptions xsi:type="SqlDatabaseTableValuesGeneratorOptions">
+            <AllowEmptyStrings>false</AllowEmptyStrings>
+            <EmptyStringProportion>10</EmptyStringProportion>
+            <ProviderId>aa8afe9c-7d62-4564-b477-c12e62e0f440</ProviderId>
+            <ConnectionString>Data Source=(localdb)\Local;Initial Catalog=restaurant;Integrated Security=False</ConnectionString>
+            <DatabaseName>restaurant</DatabaseName>
+            <ColumnName>ProductID</ColumnName>
+            <IsValidColumn>true</IsValidColumn>
+            <InvalidMessage />
+            <ColumnExists>true</ColumnExists>
             <ValueDistributionMode>Seed</ValueDistributionMode>
             <SeedValue>34</SeedValue>
-            <RepeatValues>false</RepeatValues>
-            <FromTimes>1</FromTimes>
-            <ToTimes>10</ToTimes>
-            <ExcludeValues>false</ExcludeValues>
-            <ExclusionValuesPercent>1</ExclusionValuesPercent>
+            <IsLoop>true</IsLoop>
+            <AllowNulls>false</AllowNulls>
+            <NullProportion>0</NullProportion>
+            <IsTable>true</IsTable>
+            <TableName>dbo.Products</TableName>
+            <TableExists>true</TableExists>
+            <Unique>true</Unique>
+            <IsAlwaysUnique>false</IsAlwaysUnique>
+            <ColumnDataType>char(10)</ColumnDataType>
           </GeneratorOptions>
-          <GeneratorType>ForeignKeyGenerator</GeneratorType>
-          <GeneratorName>Foreign Key (auto assigned)</GeneratorName>
-          <GeneratorDescription>references a column from parent table</GeneratorDescription>
+          <GeneratorType>SqlTableValuesGenerator</GeneratorType>
+          <GeneratorName>Table or View</GeneratorName>
+          <GeneratorDescription>loads column data of a compatible type from a table or view</GeneratorDescription>
           <HasForeignKey>true</HasForeignKey>
           <Length>10</Length>
         </Column>
