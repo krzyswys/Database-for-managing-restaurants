@@ -607,12 +607,12 @@
             <SeedValue>37</SeedValue>
             <Unique>false</Unique>
             <IsAlwaysUnique>false</IsAlwaysUnique>
-            <Expression>[0-9A-Z]{5}(-[0-9A-Z]{5}){4}</Expression>
+            <Expression>((Com|Speak|Sub|Con|Mic|Tweet|Read|Tab|Cab|Tab|Bi|Te|Mono|Print|Pro|Mon|Arm|Sup|Cart|Char|Re|Clean|Re|Trans|An|Stereo|Play|Com|Amp)(put|hold|ceiv|woof|mut|top|ta|le|cul|cess|tell|ject|find|pick|band|cord|plott|tin|cycl|tect|ni|cord|lict|tin|lifi)(|ic|im|in|up|ad|er||on|ep|ed|let|ga|aqu|ef|edg|op|oll|omm|ew|fi|an|ex|pl)?(er|or|er|on|phone|ra|entor|ator|ar|er|scope|or|ry|ridge|let))</Expression>
           </GeneratorOptions>
           <GeneratorType>SqlRegularExpressionGenerator</GeneratorType>
-          <GeneratorName>Product key</GeneratorName>
-          <GeneratorDescription> HN6MU-D2YOD-866RJ-LV2C2-13C76, 16YP6-F22EX-65QUX-7747A-7Q8CH, H16UY-HW5UC-7G87B-84Z1E-OK85Y ...</GeneratorDescription>
-          <GeneratorCategory>IT</GeneratorCategory>
+          <GeneratorName>Product Name</GeneratorName>
+          <GeneratorDescription>Repickentor, Playtinon, Cleantinedridge, Tweetnier, Cartholdoper, ... </GeneratorDescription>
+          <GeneratorCategory>Product</GeneratorCategory>
           <Length>64</Length>
         </Column>
         <Column Name="CategoryID">
