@@ -44,7 +44,7 @@ CREATE TABLE Customers
     Email      varchar(64) NOT NULL,
     CONSTRAINT Country_Customers_c CHECK (Country LIKE '[A-Z]%'),
     CONSTRAINT City_Customers_c CHECK (City LIKE '[A-Z]%'),
-    CONSTRAINT Street_Customers_c CHECK(Street LIKE '[A-Z]%'),
+    CONSTRAINT Street_Customers_c CHECK (Street LIKE '[A-Z]%'),
     CONSTRAINT Customers_pk PRIMARY KEY (CustomerID)
 );
 
@@ -75,8 +75,8 @@ CREATE TABLE Menu
     MenuID   char(10)    NOT NULL,
     MenuName varchar(64) NOT NULL,
     FromTime datetime    NOT NULL,
-    ToTime   datetime    NULL,
-    CONSTRAINT Proper_Dates_Menu_c CHECK (FromTime < ISNULL(ToTime, GETDATE())),
+    ToTime   datetime    NULL DEFAULT NULL,
+    CONSTRAINT Proper_Dates_Menu_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT Menu_pk PRIMARY KEY (MenuID)
 );
 
@@ -101,7 +101,7 @@ CREATE TABLE Orders
     OrderID              char(10)    NOT NULL,
     CustomerID           char(10)    NOT NULL,
     OrderDate            datetime    NOT NULL,
-    PaymentDate          datetime    NULL,
+    PaymentDate          datetime    NULL DEFAULT NULL,
     PayVia               char(10)    NULL,
     OrderStatus          varchar(64) NOT NULL,
     RestaurantEmployeeID char(10)    NOT NULL,
@@ -144,9 +144,9 @@ CREATE TABLE ProductPrices
 (
     ProductID char(10) NOT NULL,
     FromTime  datetime NOT NULL,
-    ToTime    datetime NULL     DEFAULT GETDATE(),
-    UnitPrice int      NOT NULL DEFAULT 0,
-    CONSTRAINT Proper_Dates_ProductPrices_c CHECK (FromTime < ISNULL(ToTime, GETDATE())),
+    ToTime    datetime NULL DEFAULT NULL,
+    UnitPrice int      NOT NULL,
+    CONSTRAINT Proper_Dates_ProductPrices_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT UnitPrice_ProductPrices_c CHECK (UnitPrice >= 0),
     CONSTRAINT ProductPrices_pk PRIMARY KEY (ProductID)
 );
@@ -194,27 +194,27 @@ CREATE TABLE EmployeesSalary
 (
     RestaurantEmployeeID char(10) NOT NULL,
     FromTime             datetime NOT NULL,
-    ToTime               datetime NULL,
+    ToTime               datetime NULL DEFAULT NULL,
     Salary               int      NOT NULL,
     CONSTRAINT Salary_EmployeesSalary_c CHECK (Salary >= 0),
-    CONSTRAINT Proper_Dates_EmployeesSalary_c CHECK (FromTime < ISNULL(ToTime, GETDATE())),
+    CONSTRAINT Proper_Dates_EmployeesSalary_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT EmployeesSalary_pk PRIMARY KEY (RestaurantEmployeeID)
 );
 
 CREATE TABLE Takeaway
 (
     OrderID    char(10) NOT NULL,
-    PickupDate datetime NULL,
+    PickupDate datetime NULL DEFAULT NULL,
     CONSTRAINT Takeaway_pk PRIMARY KEY (OrderID)
 );
 
 CREATE TABLE VariablesData
 (
     FromTime      datetime   NOT NULL,
-    ToTime        datetime   NULL,
+    ToTime        datetime   NULL DEFAULT NULL,
     VariableType  varchar(3) NOT NULL,
     VariableValue int        NOT NULL,
-    CONSTRAINT Proper_Dates_VariablesData_c CHECK (FromTime < ISNULL(ToTime, GETDATE())),
+    CONSTRAINT Proper_Dates_VariablesData_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT VariableValue_VariablesData_c CHECK (VariablesData.VariableValue >= 0)
 );
 
