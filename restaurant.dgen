@@ -1044,7 +1044,7 @@
       </Columns>
     </Table>
     <Table Name="dbo.ProductPrices">
-      <Checked>false</Checked>
+      <Checked>true</Checked>
       <Settings>
         <Truncate>true</Truncate>
         <RowsToGenerate>0</RowsToGenerate>
@@ -1058,7 +1058,7 @@
       </Settings>
       <Columns>
         <Column Name="ProductID">
-          <Checked>false</Checked>
+          <Checked>true</Checked>
           <DataType>char</DataType>
           <GeneratorOptions xsi:type="ForeignKeyGeneratorOptions">
             <Unique>true</Unique>
@@ -1080,24 +1080,60 @@
           <Length>10</Length>
         </Column>
         <Column Name="FromTime">
-          <Checked>false</Checked>
+          <Checked>true</Checked>
           <DataType>datetime</DataType>
+          <GeneratorOptions xsi:type="CheckConstraintGeneratorOptions">
+            <Unique>false</Unique>
+            <IsAlwaysUnique>false</IsAlwaysUnique>
+            <AllowNulls>false</AllowNulls>
+            <NullProportion>0</NullProportion>
+            <ValueDistributionMode>Seed</ValueDistributionMode>
+            <SeedValue>34</SeedValue>
+            <IsApplyMeaningfulBounds>true</IsApplyMeaningfulBounds>
+          </GeneratorOptions>
+          <GeneratorType>CheckConstraintGenerator</GeneratorType>
+          <GeneratorName>Check Constraint (auto assigned)</GeneratorName>
+          <GeneratorDescription>fill with values within the value range of the check constraint expression</GeneratorDescription>
           <HasCheckConstraint>true</HasCheckConstraint>
           <Scale>3</Scale>
           <Length>8</Length>
           <Precision>23</Precision>
         </Column>
         <Column Name="ToTime">
-          <Checked>false</Checked>
+          <Checked>true</Checked>
           <DataType>datetime</DataType>
+          <GeneratorOptions xsi:type="CheckConstraintGeneratorOptions">
+            <Unique>false</Unique>
+            <IsAlwaysUnique>false</IsAlwaysUnique>
+            <AllowNulls>false</AllowNulls>
+            <NullProportion>10</NullProportion>
+            <ValueDistributionMode>Seed</ValueDistributionMode>
+            <SeedValue>35</SeedValue>
+            <IsApplyMeaningfulBounds>true</IsApplyMeaningfulBounds>
+          </GeneratorOptions>
+          <GeneratorType>CheckConstraintGenerator</GeneratorType>
+          <GeneratorName>Check Constraint (auto assigned)</GeneratorName>
+          <GeneratorDescription>fill with values within the value range of the check constraint expression</GeneratorDescription>
           <HasCheckConstraint>true</HasCheckConstraint>
           <Scale>3</Scale>
           <Length>8</Length>
           <Precision>23</Precision>
         </Column>
         <Column Name="UnitPrice">
-          <Checked>false</Checked>
+          <Checked>true</Checked>
           <DataType>int</DataType>
+          <GeneratorOptions xsi:type="CheckConstraintGeneratorOptions">
+            <Unique>false</Unique>
+            <IsAlwaysUnique>false</IsAlwaysUnique>
+            <AllowNulls>false</AllowNulls>
+            <NullProportion>0</NullProportion>
+            <ValueDistributionMode>Seed</ValueDistributionMode>
+            <SeedValue>36</SeedValue>
+            <IsApplyMeaningfulBounds>true</IsApplyMeaningfulBounds>
+          </GeneratorOptions>
+          <GeneratorType>CheckConstraintGenerator</GeneratorType>
+          <GeneratorName>Check Constraint (auto assigned)</GeneratorName>
+          <GeneratorDescription>fill with values within the value range of the check constraint expression</GeneratorDescription>
           <HasCheckConstraint>true</HasCheckConstraint>
           <Length>4</Length>
           <Precision>10</Precision>
