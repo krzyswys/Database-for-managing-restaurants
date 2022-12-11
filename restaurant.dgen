@@ -308,7 +308,7 @@
           <Checked>true</Checked>
           <DataType>datetime</DataType>
           <GeneratorOptions xsi:type="CheckConstraintGeneratorOptions">
-            <Unique>false</Unique>
+            <Unique>true</Unique>
             <IsAlwaysUnique>false</IsAlwaysUnique>
             <AllowNulls>false</AllowNulls>
             <NullProportion>10</NullProportion>
