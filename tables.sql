@@ -20,7 +20,6 @@ CREATE TABLE CompanyReservationParticipants
 (
     ReservationID     char(10) NOT NULL,
     CompanyEmployeeID char(10) NOT NULL,
-    CONSTRAINT CompanyReservationParticipants_pk PRIMARY KEY (ReservationID)
 );
 
 CREATE TABLE CustomersPersonalData
@@ -92,7 +91,6 @@ CREATE TABLE OrderDetails
     ProductID char(10) NOT NULL,
     Quantity  int      NOT NULL,
     CONSTRAINT Quantity_OrderDetails_c CHECK (Quantity >= 0),
-    CONSTRAINT OrderDetails_pk PRIMARY KEY (OrderID)
 );
 
 CREATE TABLE Orders
@@ -146,7 +144,6 @@ CREATE TABLE ProductPrices
     UnitPrice int      NOT NULL,
     CONSTRAINT Proper_Dates_ProductPrices_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT UnitPrice_ProductPrices_c CHECK (UnitPrice >= 0),
-    CONSTRAINT ProductPrices_pk PRIMARY KEY (ProductID)
 );
 
 CREATE TABLE Categories
@@ -196,7 +193,6 @@ CREATE TABLE EmployeesSalary
     Salary               int      NOT NULL,
     CONSTRAINT Salary_EmployeesSalary_c CHECK (Salary >= 0),
     CONSTRAINT Proper_Dates_EmployeesSalary_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
-    CONSTRAINT EmployeesSalary_pk PRIMARY KEY (RestaurantEmployeeID)
 );
 
 CREATE TABLE Takeaway
