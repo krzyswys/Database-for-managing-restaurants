@@ -61,7 +61,7 @@ insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
 values ('0000000014', 'Bread', 28);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000015', 'Pepperoni', 0);
+values ('0000000015', 'Milk', 0);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
 values ('0000000016', 'Octopus', 11);
