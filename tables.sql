@@ -84,7 +84,6 @@ CREATE TABLE MenuDetails
 (
     MenuID    char(10) NOT NULL,
     ProductID char(10) NOT NULL,
-    CONSTRAINT MenuDetails_pk PRIMARY KEY (MenuID)
 );
 
 CREATE TABLE OrderDetails
