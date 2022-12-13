@@ -118,7 +118,6 @@ CREATE TABLE ProductIngredients
 (
     ProductID    char(10) NOT NULL,
     IngredientID char(10) NOT NULL,
-    CONSTRAINT ProductIngredients_pk PRIMARY KEY (ProductID)
 );
 
 CREATE TABLE IngredientsWarehouse
