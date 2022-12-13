@@ -17,6 +17,61 @@ values ('0000000005', 'Desserts');
 insert into Categories (CategoryID, CategoryName)
 values ('0000000006', 'Pizza');
 
+--IngredientsWarehouse
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000001', 'Flour', 100);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000002', 'Peperoni', 30);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000003', 'Lemon', 0);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000004', 'Water', 100);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000005', 'Orange', 33);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000006', 'Cheese', 20);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000007', 'Tomato Sauce', 200);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000008', 'Jalapeno Pepper', 10);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000009', 'Beans', 15);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000010', 'Pepperoni', 0);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000011', 'Prawns', 18);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000012', 'Fries', 200);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000013', 'Lobster', 0);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000014', 'Bread', 28);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000015', 'Pepperoni', 0);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000016', 'Octopus', 11);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000017', 'Chicken', 22);
+
+insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+values ('0000000018', 'Oyster', 16);
+
 --Products
 insert into Products (ProductID, ProductName, CategoryID)
 values ('0000000001', 'Lemonade', '0000000001');
@@ -40,19 +95,131 @@ insert into Products (ProductID, ProductName, CategoryID)
 values ('0000000007', 'Pizza Pepperoni', '0000000003');
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000008', 'Prawns', '0000000002');
+values ('0000000008', 'Prawns and Fries', '0000000002');
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000009', 'Lobster', '0000000002');
+values ('0000000009', 'Lobster and Bread', '0000000002');
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000010', 'Octopus', '0000000002');
+values ('0000000010', 'Octopus and Fries', '0000000002');
 
 insert into Products (ProductID, ProductName, CategoryID)
 values ('0000000011', 'Pizza Chicken', '0000000003');
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000012', 'Oyster', '0000000002');
+values ('0000000012', 'Oyster and Bread', '0000000002');
+
+--ProductIngredients
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000001', '0000000003');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000001', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000002', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000003', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000003', '0000000005');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000004', '0000000001');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000004', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000004', '0000000006');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000004', '0000000007');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000005', '0000000001');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000005', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000005', '0000000006');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000005', '0000000007');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000005', '0000000008');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000006', '0000000001');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000006', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000006', '0000000006');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000006', '0000000007');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000006', '0000000009');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000007', '0000000001');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000007', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000007', '0000000006');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000007', '0000000007');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000007', '0000000010');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000008', '0000000011');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000008', '0000000012');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000009', '0000000013');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000009', '0000000014');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000010', '0000000012');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000010', '0000000016');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000011', '0000000001');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000011', '0000000004');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000011', '0000000006');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000011', '0000000007');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000011', '0000000017');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000012', '0000000014');
+
+insert into ProductIngredients (ProductID, IngredientID)
+values ('0000000012', '0000000018');
 
 --ProductPrices
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
