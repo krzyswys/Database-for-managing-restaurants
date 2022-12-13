@@ -2,7 +2,7 @@
 
 --Current menu view
 CREATE VIEW Current_Menu_View AS
-SELECT Products.ProductName, ProductPrices.UnitPrice
+SELECT Products.ProductID ,Products.ProductName, ProductPrices.UnitPrice
 FROM MenuDetails
          JOIN Products ON Products.ProductID = MenuDetails.ProductID
          JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
