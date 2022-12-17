@@ -212,7 +212,6 @@ CREATE TABLE VariablesData
     CONSTRAINT VariableValue_VariablesData_c CHECK (VariablesData.VariableValue >= 0)
 );
 
-
 -- Foreign Keys
 ALTER TABLE Products
     ADD CONSTRAINT Categories_Products
