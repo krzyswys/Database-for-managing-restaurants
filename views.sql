@@ -124,7 +124,29 @@ GROUP BY RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName
 
 --Five_Best_Employees_View
 CREATE VIEW Five_Best_Employees_View AS
-SELECT TOP 5 RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName FROM RestaurantEmployees 
+SELECT TOP 5 RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName FROM RestaurantEmployees
 INNER JOIN Orders ON Orders.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
 GROUP BY RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName
 ORDER BY COUNT(OrderID) DESC
+
+--Total_Products_Sales_View
+CREATE VIEW Total_Products_Sales_View AS
+SELECT ProductName, SUM(Quantity) AS TotalOrders
+FROM OrderDetails
+JOIN Products ON Products.ProductID = OrderDetails.ProductID
+GROUP BY ProductName
+
+--Total_Categories_Sales_View
+CREATE VIEW Total_Categories_Sales_View AS
+SELECT Categories.CategoryName, SUM(Quantity) AS TotalOrders
+FROM OrderDetails
+JOIN Products ON Products.ProductID = OrderDetails.ProductID
+JOIN Categories ON Products.CategoryID = Categories.CategoryID
+GROUP BY Categories.CategoryName
+
+--Available_Tables_View
+CREATE VIEW Available_Tables_View AS
+SELECT DISTINCT DiningTables.DiningTableID, DiningTables.NumberOfSeats
+FROM Reservation
+JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID
+WHERE ToTime < GETDATE()
