@@ -116,3 +116,9 @@ GROUP BY Orders.OrderID) AS table2 ) AS [total order price for the last week]
 
 FROM Orders 
 
+--average_salary_of_a_restaurant_employee_view
+CREATE VIEW average_salary_of_a_restaurant_employee_view AS
+SELECT RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName, ROUND(AVG(Salary),2) as [srednie zarobki]
+FROM RestaurantEmployees INNER JOIN EmployeesSalary ON RestaurantEmployees.RestaurantEmployeeID = EmployeesSalary.RestaurantEmployeeID
+GROUP BY RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName
+
