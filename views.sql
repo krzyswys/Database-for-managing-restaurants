@@ -84,14 +84,14 @@ CREATE VIEW report_of_total_orders_products_price_view AS
 SELECT 
 (SELECT COUNT(OrderID) FROM Orders
 WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
-AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of orders from the last month],
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of orders for the last month],
 (SELECT COUNT(OrderID) FROM Orders 
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
-AS [total number of orders from the last week],
+AS [total number of orders for the last week],
 
 (SELECT SUM(Quantity) FROM OrderDetails INNER JOIN Orders ON Orders.OrderID = OrderDetails.OrderID
 WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
-AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of sold products from the last month],
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of sold products for the last month],
 
 (SELECT SUM(Quantity) FROM OrderDetails INNER JOIN Orders ON Orders.OrderID = OrderDetails.OrderID
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
@@ -115,4 +115,10 @@ AND Orders.OrderDate >= ProductPrices.FromTime AND (ProductPrices.ToTime is NULL
 GROUP BY Orders.OrderID) AS table2 ) AS [total order price for the last week]
 
 FROM Orders 
+
+--average_salary_of_a_restaurant_employee_view
+CREATE VIEW average_salary_of_a_restaurant_employee_view AS
+SELECT RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName, ROUND(AVG(Salary),2) as [srednie zarobki]
+FROM RestaurantEmployees INNER JOIN EmployeesSalary ON RestaurantEmployees.RestaurantEmployeeID = EmployeesSalary.RestaurantEmployeeID
+GROUP BY RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName
 
