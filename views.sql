@@ -122,3 +122,9 @@ SELECT RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName, ROUND(AVG(S
 FROM RestaurantEmployees INNER JOIN EmployeesSalary ON RestaurantEmployees.RestaurantEmployeeID = EmployeesSalary.RestaurantEmployeeID
 GROUP BY RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName
 
+--Five_Best_Employees_View
+CREATE VIEW Five_Best_Employees_View AS
+SELECT TOP 5 RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName FROM RestaurantEmployees 
+INNER JOIN Orders ON Orders.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
+GROUP BY RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName
+ORDER BY COUNT(OrderID) DESC
