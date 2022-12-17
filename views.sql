@@ -84,14 +84,14 @@ CREATE VIEW report_of_total_orders_products_price_view AS
 SELECT 
 (SELECT COUNT(OrderID) FROM Orders
 WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
-AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of orders from the last month],
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of orders for the last month],
 (SELECT COUNT(OrderID) FROM Orders 
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
-AS [total number of orders from the last week],
+AS [total number of orders for the last week],
 
 (SELECT SUM(Quantity) FROM OrderDetails INNER JOIN Orders ON Orders.OrderID = OrderDetails.OrderID
 WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
-AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of sold products from the last month],
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of sold products for the last month],
 
 (SELECT SUM(Quantity) FROM OrderDetails INNER JOIN Orders ON Orders.OrderID = OrderDetails.OrderID
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
