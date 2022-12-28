@@ -104,7 +104,7 @@ END
 go
 
 -- usunięcie produktu
-CREATE PROCEDURE AddProductProcedure
+CREATE PROCEDURE RemoveProductProcedure
 @CategoryName varchar(64)
 @Name varchar(64)
 AS
@@ -233,7 +233,7 @@ END
 go
 
 -- usunięcie pracownika
-CREATE PROCEDURE AddProductProcedure
+CREATE PROCEDURE RemoveEmployeeProcedure
 @RestaurantEmployeeID INT
 
 AS
