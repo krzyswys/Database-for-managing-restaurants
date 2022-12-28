@@ -1,5 +1,5 @@
 -- Wypisz zamówienie po id
-CREATE FUNCTION GetValueOfOrder(@input char)
+CREATE FUNCTION GetValueOfOrder(@input int)
     RETURNS table AS
         RETURN
         SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as cena, Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia as rodzaj płatności, RestaurantEmployees.FirstName as imie obsługującego pracownika, Customers.Email as kontakt do klienta
@@ -11,17 +11,17 @@ CREATE FUNCTION GetValueOfOrder(@input char)
 go
 
 -- sprawdzenie stanu zamówienia po id
-CREATE FUNCTION GetStateOfOrder(@input char)
+CREATE FUNCTION GetStateOfOrder(@input int)
     RETURNS text AS
         RETURN
         SELECT Orders.OrderStatus
         FROM Orders
-        WHERE Orders.OrderStatus = @input
+        WHERE Orders.OrderID = @input
 go
 
 
 -- wyposanie danych pracownika po id
-CREATE FUNCTION GetDataOfEmployeee(@input char)
+CREATE FUNCTION GetDataOfEmployeee(@input int)
     RETURNS table AS
         RETURN
         SELECT Imie: RestaurantEmployees.FirstName, Nazwisko: RestaurantEmployees.LastName, Dane kontaktowe: RestaurantEmployees.AdressDetails,Stanowisko: RestaurantEmployees.Occupation,Zatrudniony od: EmployeesSalary.FromTime, do: EmployeesSalary.ToTime, EmployeesSalary.Value
@@ -31,7 +31,7 @@ CREATE FUNCTION GetDataOfEmployeee(@input char)
 go
 
 -- sprawdzenie stanu rezerwacji id
-CREATE FUNCTION GetStateOfReservation(@input char)
+CREATE FUNCTION GetStateOfReservation(@input int)
     RETURNS text AS
         RETURN
         SELECT IF(Reservation.FromTime< GETDATE(), "Nie rozpoczęto", IF(Reservation.ToTime< GETDATE(), "Zakończono", "W trakcie"))
