@@ -1,8 +1,8 @@
 -- Tables
 CREATE TABLE Companies
 (
-    CompanyID   char(10)    NOT NULL,
-    CustomerID  char(10)    NOT NULL,
+    CompanyID   int    NOT NULL,
+    CustomerID  int    NOT NULL,
     CompanyName varchar(64) NOT NULL,
     NIP         char(10)    NOT NULL,
     CONSTRAINT Companies_pk PRIMARY KEY (CompanyID)
@@ -10,21 +10,21 @@ CREATE TABLE Companies
 
 CREATE TABLE CompanyEmployees
 (
-    CompanyEmployeeID char(10) NOT NULL,
-    PersonID          char(10) NOT NULL,
-    CompanyID         char(10) NOT NULL,
+    CompanyEmployeeID int NOT NULL,
+    PersonID          int NOT NULL,
+    CompanyID         int NOT NULL,
     CONSTRAINT CompanyEmployees_pk PRIMARY KEY (CompanyEmployeeID)
 );
 
 CREATE TABLE CompanyReservationParticipants
 (
-    ReservationID     char(10) NOT NULL,
-    CompanyEmployeeID char(10) NOT NULL,
+    ReservationID     int NOT NULL,
+    CompanyEmployeeID int NOT NULL,
 );
 
 CREATE TABLE CustomersPersonalData
 (
-    PersonID  char(10)    NOT NULL,
+    PersonID  int    NOT NULL,
     FirstName varchar(64) NOT NULL,
     LastName  varchar(64) NOT NULL,
     CONSTRAINT FirstName_CustomersPersonalData_c CHECK (FirstName LIKE '[A-Z]%'),
@@ -34,7 +34,7 @@ CREATE TABLE CustomersPersonalData
 
 CREATE TABLE Customers
 (
-    CustomerID char(10)    NOT NULL,
+    CustomerID int    NOT NULL,
     Street     varchar(64) NOT NULL,
     Country    varchar(64) NOT NULL,
     City       varchar(64) NOT NULL,
@@ -49,14 +49,14 @@ CREATE TABLE Customers
 
 CREATE TABLE IndividualCustomers
 (
-    CustomerID char(10) NOT NULL,
-    PersonID   char(10) NOT NULL,
+    CustomerID int NOT NULL,
+    PersonID   int NOT NULL,
     CONSTRAINT IndividualCustomers_pk PRIMARY KEY (CustomerID)
 );
 
 CREATE TABLE DiningTables
 (
-    DiningTableID char(10) NOT NULL,
+    DiningTableID int NOT NULL,
     NumberOfSeats int      NOT NULL,
     CONSTRAINT NumberOfSeats_DiningTables_c CHECK (NumberOfSeats > 0),
     CONSTRAINT DiningTables_pk PRIMARY KEY (DiningTableID)
@@ -64,14 +64,14 @@ CREATE TABLE DiningTables
 
 CREATE TABLE Invoices
 (
-    InvoiceID char(10) NOT NULL,
-    OrderID   char(10) NOT NULL,
+    InvoiceID int NOT NULL,
+    OrderID   int NOT NULL,
     CONSTRAINT Invoices_pk PRIMARY KEY (InvoiceID)
 );
 
 CREATE TABLE Menu
 (
-    MenuID   char(10)    NOT NULL,
+    MenuID   int    NOT NULL,
     MenuName varchar(64) NOT NULL,
     FromTime datetime    NOT NULL,
     ToTime   datetime    NULL DEFAULT NULL,
@@ -81,46 +81,46 @@ CREATE TABLE Menu
 
 CREATE TABLE MenuDetails
 (
-    MenuID    char(10) NOT NULL,
-    ProductID char(10) NOT NULL,
+    MenuID    int NOT NULL,
+    ProductID int NOT NULL,
 );
 
 CREATE TABLE OrderDetails
 (
-    OrderID   char(10) NOT NULL,
-    ProductID char(10) NOT NULL,
+    OrderID   int NOT NULL,
+    ProductID int NOT NULL,
     Quantity  int      NOT NULL,
     CONSTRAINT Quantity_OrderDetails_c CHECK (Quantity >= 0),
 );
 
 CREATE TABLE Orders
 (
-    OrderID              char(10)    NOT NULL,
-    CustomerID           char(10)    NOT NULL,
+    OrderID              int    NOT NULL,
+    CustomerID           int    NOT NULL,
     OrderDate            datetime    NOT NULL,
     PaymentDate          datetime    NULL DEFAULT NULL,
     PayVia               char(10)    NULL,
     OrderStatus          varchar(64) NOT NULL,
-    RestaurantEmployeeID char(10)    NOT NULL,
+    RestaurantEmployeeID int    NOT NULL,
     CONSTRAINT Orders_pk PRIMARY KEY (OrderID)
 );
 
 CREATE TABLE PaymentMethod
 (
-    PaymentID   char(10)    NOT NULL,
+    PaymentID   int    NOT NULL,
     PaymentName varchar(64) NOT NULL,
     CONSTRAINT PaymentMethod_pk PRIMARY KEY (PaymentID)
 )
 
 CREATE TABLE ProductIngredients
 (
-    ProductID    char(10) NOT NULL,
-    IngredientID char(10) NOT NULL,
+    ProductID    int NOT NULL,
+    IngredientID int NOT NULL,
 );
 
 CREATE TABLE IngredientsWarehouse
 (
-    IngredientID   char(10)    NOT NULL,
+    IngredientID   int    NOT NULL,
     IngredientName varchar(64) NOT NULL,
     QuantityLeft   int         NOT NULL,
     CONSTRAINT QuantityLeft_IngredientsWarehouse_c CHECK (QuantityLeft >= 0),
@@ -130,15 +130,15 @@ CREATE TABLE IngredientsWarehouse
 
 CREATE TABLE Products
 (
-    ProductID   char(10)    NOT NULL,
+    ProductID   int    NOT NULL,
     ProductName varchar(64) NOT NULL,
-    CategoryID  char(10)    NOT NULL,
+    CategoryID  int    NOT NULL,
     CONSTRAINT Products_pk PRIMARY KEY (ProductID)
 );
 
 CREATE TABLE ProductPrices
 (
-    ProductID char(10) NOT NULL,
+    ProductID int NOT NULL,
     FromTime  datetime NOT NULL,
     ToTime    datetime NULL DEFAULT NULL,
     UnitPrice int      NOT NULL,
@@ -148,19 +148,19 @@ CREATE TABLE ProductPrices
 
 CREATE TABLE Categories
 (
-    CategoryID   char(10)    NOT NULL,
+    CategoryID   int    NOT NULL,
     CategoryName varchar(64) NOT NULL,
     CONSTRAINT Categories_pk PRIMARY KEY (CategoryID)
 );
 
 CREATE TABLE Reservation
 (
-    ReservationID char(10) NOT NULL,
+    ReservationID int NOT NULL,
     FromTime      datetime NOT NULL,
     ToTime        datetime NOT NULL,
     Seats         int      NOT NULL,
-    DiningTableID char(10) NOT NULL,
-    OrderID       char(10) NOT NULL,
+    DiningTableID int NOT NULL,
+    OrderID       int NOT NULL,
     CONSTRAINT Seats_Reservation_c CHECK (Seats <= 40 AND Seats > 0),
     CONSTRAINT Proper_Dates_Reservation_c CHECK (FromTime < ToTime),
     CONSTRAINT Reservation_pk PRIMARY KEY (ReservationID)
@@ -168,7 +168,7 @@ CREATE TABLE Reservation
 
 CREATE TABLE RestaurantEmployees
 (
-    RestaurantEmployeeID char(10)    NOT NULL,
+    RestaurantEmployeeID int    NOT NULL,
     FirstName            varchar(64) NOT NULL,
     LastName             varchar(64) NOT NULL,
     Occupation           varchar(64) NOT NULL,
@@ -187,7 +187,7 @@ CREATE TABLE RestaurantEmployees
 
 CREATE TABLE EmployeesSalary
 (
-    RestaurantEmployeeID char(10) NOT NULL,
+    RestaurantEmployeeID int NOT NULL,
     FromTime             datetime NOT NULL,
     ToTime               datetime NULL DEFAULT NULL,
     Salary               int      NOT NULL,
@@ -197,7 +197,7 @@ CREATE TABLE EmployeesSalary
 
 CREATE TABLE Takeaway
 (
-    OrderID    char(10) NOT NULL,
+    OrderID    int NOT NULL,
     PickupDate datetime NULL DEFAULT NULL,
     CONSTRAINT Takeaway_pk PRIMARY KEY (OrderID)
 );
