@@ -44,13 +44,13 @@ WHERE OrderStatus like '%not_paid%'
 
 --Today_Reservations_View
 CREATE VIEW Today_Reservations_View AS
-SELECT FromTime, ToTime, Seats, Orders.PaymentDate, CustomerPersonalData.FirstName, CustomerPersonalData.LastName
+SELECT FromTime, ToTime, Seats, Orders.PaymentDate, CustomersPersonalData.FirstName, CustomersPersonalData.LastName
 FROM Reservation
         JOIN Orders ON Orders.OrderID = Reservation.OrderID
         JOIN Customers ON Customers.CustomerID = Orders.CustomerID
         JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
-        JOIN CustomerPersonalData ON CustomerPersonalData.PersonID = IndividualCustomers.PersonID 
-WHERE FromTime = SELECT CAST( GETDATE() AS Date ) 
+        JOIN CustomersPersonalData ON CustomersPersonalData.PersonID = IndividualCustomers.PersonID 
+WHERE FromTime = (SELECT CAST( GETDATE() AS Date )) 
 
 --Orders_Pending_For_Confirmation_View
 CREATE VIEW Orders_Pending_For_Confirmation_View AS
@@ -65,8 +65,10 @@ FROM Orders
 WHERE Takeaway.PickupDate is NULL --?TODO: create a takeaway_status?
 
 --Order_Details_View
-CREATE VIEW Order_Details_View AS --?TODO: create information what kind of order is this? regular or takeaway?
-SELECT  CustomerID,CustomerPersonalData.FirstName, CustomerPersonalData.LastName,OrderID, OrderDetails.Quantity, ProductPrices.UnitPrice, OrderDate, PaymentDate, PaymentMethod.PaymentName, OrderStatus, RestaurantEmployeeID, RestaurantEmployees.FirstName,RestaurantEmployees.LastName, 
+CREATE VIEW Order_Details_View
+AS
+SELECT  Customers.CustomerID,CustomersPersonalData.FirstName, CustomersPersonalData.LastName,Orders.OrderID, OrderDetails.Quantity,
+ProductPrices.UnitPrice, OrderDate, PaymentDate, PaymentMethod.PaymentName, OrderStatus, RestaurantEmployees.RestaurantEmployeeID
 FROM Orders
         JOIN OrderDetails ON  OrderDetails.OrderID = Orders.OrderID
         JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -75,7 +77,7 @@ FROM Orders
         JOIN RestaurantEmployees ON RestaurantEmployees.RestaurantEmployeeID = Orders.RestaurantEmployeeID
         JOIN Customers ON Customers.CustomerID = Orders.CustomerID
         JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
-        JOIN CustomerPersonalData ON CustomerPersonalData.PersonID = IndividualCustomers.PersonID 
+        JOIN CustomersPersonalData ON CustomersPersonalData.PersonID = IndividualCustomers.PersonID 
 		
 		
 --Report_Of_Total_Orders_Products_Price_View
