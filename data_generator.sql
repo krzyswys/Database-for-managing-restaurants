@@ -1,325 +1,325 @@
 --Categories
 insert into Categories (CategoryID, CategoryName)
-values ('0000000001', 'Beverages');
+values (1, 'Beverages');
 
 insert into Categories (CategoryID, CategoryName)
-values ('0000000002', 'Seafood');
+values (2, 'Seafood');
 
 insert into Categories (CategoryID, CategoryName)
-values ('0000000003', 'Pizza');
+values (3, 'Pizza');
 
 insert into Categories (CategoryID, CategoryName)
-values ('0000000004', 'Pasta');
+values (4, 'Pasta');
 
 insert into Categories (CategoryID, CategoryName)
-values ('0000000005', 'Desserts');
+values (5, 'Desserts');
 
 insert into Categories (CategoryID, CategoryName)
-values ('0000000006', 'Pizza');
+values (6, 'Pizza');
 
 --IngredientsWarehouse
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000001', 'Flour', 100);
+values (1, 'Flour', 100);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000002', 'Peperoni', 30);
+values (2, 'Peperoni', 30);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000003', 'Lemon', 0);
+values (3, 'Lemon', 0);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000004', 'Water', 100);
+values (4, 'Water', 100);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000005', 'Orange', 33);
+values (5, 'Orange', 33);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000006', 'Cheese', 20);
+values (6, 'Cheese', 20);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000007', 'Tomato Sauce', 200);
+values (7, 'Tomato Sauce', 200);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000008', 'Jalapeno Pepper', 10);
+values (8, 'Jalapeno Pepper', 10);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000009', 'Beans', 15);
+values (9, 'Beans', 15);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000010', 'Pepperoni', 0);
+values (10, 'Pepperoni', 0);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000011', 'Prawns', 18);
+values (11, 'Prawns', 18);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000012', 'Fries', 200);
+values (12, 'Fries', 200);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000013', 'Lobster', 0);
+values (13, 'Lobster', 0);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000014', 'Bread', 28);
+values (14, 'Bread', 28);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000015', 'Milk', 0);
+values (15, 'Milk', 0);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000016', 'Octopus', 11);
+values (16, 'Octopus', 11);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000017', 'Chicken', 22);
+values (17, 'Chicken', 22);
 
 insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values ('0000000018', 'Oyster', 16);
+values (18, 'Oyster', 16);
 
 --Products
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000001', 'Lemonade', '0000000001');
+values (1, 'Lemonade', 1);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000002', 'Water', '0000000001');
+values (2, 'Water', 1);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000003', 'Orange Juice', '0000000001');
+values (3, 'Orange Juice', 1);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000004', 'Pizza Margherita', '0000000003');
+values (4, 'Pizza Margherita', '3);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000005', 'Pizza Diabolo', '0000000003');
+values (5, 'Pizza Diabolo', 3);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000006', 'Pizza Mexicana', '0000000003');
+values (6, 'Pizza Mexicana', 3);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000007', 'Pizza Pepperoni', '0000000003');
+values (7, 'Pizza Pepperoni', 3);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000008', 'Prawns and Fries', '0000000002');
+values (8, 'Prawns and Fries', 2);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000009', 'Lobster and Bread', '0000000002');
+values (9, 'Lobster and Bread', 2);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000010', 'Octopus and Fries', '0000000002');
+values (10, 'Octopus and Fries', 2);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000011', 'Pizza Chicken', '0000000003');
+values (11, 'Pizza Chicken', 3);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values ('0000000012', 'Oyster and Bread', '0000000002');
+values (12, 'Oyster and Bread', 2);
 
 --ProductIngredients
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000001', '0000000003');
+values (1, 3);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000001', '0000000004');
+values (1, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000002', '0000000004');
+values (2, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000003', '0000000004');
+values (3, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000003', '0000000005');
+values (3, 5);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000004', '0000000001');
+values (4, 1);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000004', '0000000004');
+values (4, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000004', '0000000006');
+values (4, 6);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000004', '0000000007');
+values (4, 7);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000005', '0000000001');
+values (5, 1);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000005', '0000000004');
+values (5, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000005', '0000000006');
+values (5, 6);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000005', '0000000007');
+values (5, 7);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000005', '0000000008');
+values (5, 8);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000006', '0000000001');
+values (6, 1);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000006', '0000000004');
+values (6, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000006', '0000000006');
+values (6, 6);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000006', '0000000007');
+values (6, 7);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000006', '0000000009');
+values (6, 9);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000007', '0000000001');
+values (7, 1);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000007', '0000000004');
+values (7, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000007', '0000000006');
+values (7, 6);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000007', '0000000007');
+values (7, 7);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000007', '0000000010');
+values (7, 10);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000008', '0000000011');
+values (8, 11);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000008', '0000000012');
+values (8, 12);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000009', '0000000013');
+values (9, 13);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000009', '0000000014');
+values (9, 14);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000010', '0000000012');
+values (10, 12);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000010', '0000000016');
+values (10, 16);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000011', '0000000001');
+values (11, 1);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000011', '0000000004');
+values (11, 4);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000011', '0000000006');
+values (11, 6);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000011', '0000000007');
+values (11, 7);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000011', '0000000017');
+values (11, 17);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000012', '0000000014');
+values (12, 14);
 
 insert into ProductIngredients (ProductID, IngredientID)
-values ('0000000012', '0000000018');
+values (12, 18);
 
 --ProductPrices
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000001', '2022-01-02 11:36:14.840', NULL, 30);
+values (1, '2022-01-02 11:36:14.840', NULL, 30);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000002', '2022-01-02 11:36:14.840', NULL, 40);
+values (2, '2022-01-02 11:36:14.840', NULL, 40);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000003', '2022-01-02 11:36:14.840', NULL, 35);
+values (3, '2022-01-02 11:36:14.840', NULL, 35);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000004', '2022-01-02 11:36:14.840', NULL, 50);
+values (4, '2022-01-02 11:36:14.840', NULL, 50);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000005', '2022-01-02 11:36:14.840', NULL, 10);
+values (5, '2022-01-02 11:36:14.840', NULL, 10);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000006', '2022-01-02 11:36:14.840', NULL, 70);
+values (6, '2022-01-02 11:36:14.840', NULL, 70);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000007', '2022-01-02 11:36:14.840', NULL, 45);
+values (7, '2022-01-02 11:36:14.840', NULL, 45);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000008', '2022-01-02 11:36:14.840', NULL, 15);
+values (8, '2022-01-02 11:36:14.840', NULL, 15);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000009', '2022-01-02 11:36:14.840', NULL, 25);
+values (9, '2022-01-02 11:36:14.840', NULL, 25);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000010', '2022-01-02 11:36:14.840', NULL, 55);
+values (10, '2022-01-02 11:36:14.840', NULL, 55);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000011', '2022-01-02 11:36:14.840', NULL, 40);
+values (11, '2022-01-02 11:36:14.840', NULL, 40);
 
 insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values ('0000000012', '2022-01-02 11:36:14.840', NULL, 100);
+values (12, '2022-01-02 11:36:14.840', NULL, 100);
 
 --Menu
 insert into Menu (MenuID, MenuName, FromTime, ToTime)
-values ('0000000001', 'Current', '2022-12-05 11:36:14.840', NULL);
+values (1, 'Current', '2022-12-05 11:36:14.840', NULL);
 
 insert into Menu (MenuID, MenuName, FromTime, ToTime)
-values ('0000000002', 'Previous1', '2022-01-02 11:36:14.840', '2022-12-04 11:36:14.840');
+values (2, 'Previous1', '2022-01-02 11:36:14.840', '2022-12-04 11:36:14.840');
 
 insert into Menu (MenuID, MenuName, FromTime, ToTime)
-values ('0000000003', 'Previous2', '2021-02-05 11:36:14.840', '2022-01-01 11:36:14.840');
+values (3, 'Previous2', '2021-02-05 11:36:14.840', '2022-01-01 11:36:14.840');
 
 
 --MenuDetails
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000001', '0000000001');
+values (1, 1);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000001', '0000000002');
+values (1, 2);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000001', '0000000003');
+values (1, 3);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000001', '0000000005');
+values (1, 5);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000001', '0000000011');
+values (1, 11);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000001', '0000000012');
+values (1, 12);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000002', '0000000002');
+values (2, 2);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000002', '0000000006');
+values (2, 6);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000002', '0000000007');
+values (2, 7);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000002', '0000000008');
+values (2, 8);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000002', '0000000009');
+values (2, 9);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000002', '0000000010');
+values (2, 10);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000003', '0000000002');
+values (3, 2);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000003', '0000000004');
+values (3, 4);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000003', '0000000006');
+values (3, 6);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000003', '0000000008');
+values (3, 8);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000003', '0000000010');
+values (3, 10);
 
 insert into MenuDetails (MenuID, ProductID)
-values ('0000000003', '0000000012');
+values (3, 12);
