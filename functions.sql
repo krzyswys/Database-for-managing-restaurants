@@ -111,3 +111,37 @@ CREATE FUNCTION GetCheapestProductInCategory(@input char)
         INNER JOIN Categories ON Categories.CategoryID = Products.CategoryID
         WHERE Categories.CategoryID = @input
 go
+
+-- GetIngredientsForProduct
+CREATE FUNCTION GetIngredientsForProduct(@ProductID int)
+    RETURNS table
+	AS
+	RETURN
+		SELECT IngredientName
+		FROM ProductIngredients
+		JOIN IngredientsWarehouse ON IngredientsWarehouse.IngredientID = ProductIngredients.IngredientID
+		WHERE ProductIngredients.ProductID = @ProductID
+GO
+
+-- GetProductsFromCategory
+CREATE FUNCTION GetProductsFromCategory(@CategoryID int)
+    RETURNS table
+	AS
+	RETURN
+		SELECT Products.ProductName
+		FROM Products
+		JOIN Categories ON Categories.CategoryID = Products.CategoryID
+		WHERE Categories.CategoryID = @CategoryID
+GO
+
+-- GetProductsFromMenu
+CREATE FUNCTION GetProductsFromMenu(@MenuID int)
+    RETURNS table
+	AS
+	RETURN
+		SELECT Products.ProductName
+		FROM Menu
+		JOIN MenuDetails ON MenuDetails.MenuID = Menu.MenuID
+		JOIN Products ON Products.ProductID = MenuDetails.ProductID
+		WHERE Menu.MenuID = @MenuID
+GO
