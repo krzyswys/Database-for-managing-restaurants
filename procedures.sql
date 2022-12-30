@@ -257,3 +257,215 @@ BEGIN
     END CATCH
 END
 go
+
+CREATE PROCEDURE AddMenuProcedure
+@MenuName varchar(64),
+@FromTime datetime,
+@ToTime   datetime
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM Menu
+            WHERE MenuName = @MenuName
+        )
+			BEGIN
+				;
+				THROW 52000, 'Menu with provided name is already in the database', 1
+			END
+
+    DECLARE @MenuID INT
+		SELECT @MenuID = ISNULL(MAX(MenuID), 0) + 1
+		FROM Menu
+
+	INSERT INTO Menu(MenuID, MenuName, FromTime, ToTime)
+	VALUES (@MenuID, @MenuName, @FromTime, @ToTime);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error adding menu: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+--
+CREATE PROCEDURE RemoveMenuProcedure
+@MenuID int
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM Menu
+            WHERE @MenuID = @MenuID
+        )
+        BEGIN
+        ;
+        DELETE FROM Menu WHERE  @MenuID = MenuID
+        END
+    ELSE
+        BEGIN
+            ;
+            THROW 52000, 'Menu with provided ID does not exist', 1 
+        END
+      
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error removing menu: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+CREATE PROCEDURE AddIngredientToWarehouse1
+@IngredientName varchar(64),
+@QuantityLeft int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM IngredientsWarehouse
+            WHERE IngredientName = @IngredientName
+        )
+			BEGIN
+				;
+				THROW 52000, 'Ingredient with provided name is already in the database', 1
+			END
+
+    DECLARE @IngredientID INT
+		SELECT @IngredientID = ISNULL(MAX(IngredientID), 0) + 1
+		FROM IngredientsWarehouse
+
+	INSERT INTO IngredientsWarehouse(IngredientID, IngredientName, QuantityLeft)
+	VALUES (@IngredientID, @IngredientName, @QuantityLeft);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error adding ingredient: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+CREATE PROCEDURE RemoveIngredientFromWarehouse
+@IngredientID int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM IngredientsWarehouse
+            WHERE IngredientID = @IngredientID
+        )
+        BEGIN
+        ;
+        DELETE FROM IngredientsWarehouse WHERE  IngredientID = @IngredientID
+        END
+    ELSE
+        BEGIN
+            ;
+            THROW 52000, 'Ingredient with provided ID does not exist', 1 
+        END
+      
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error removing Ingredient: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+CREATE PROCEDURE AddPairToProductIngredients
+@ProductID int,
+@IngredientID int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM ProductIngredients
+            WHERE IngredientID = @IngredientID
+			AND ProductID = @ProductID
+        )
+			BEGIN
+				;
+				THROW 52000, 'This productID-ingredientID pair already exists', 1
+			END
+		IF NOT EXISTS(
+            SELECT *
+            FROM Products
+            WHERE ProductID = @ProductID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Product with provided ID does not exist', 1
+			END
+		IF NOT EXISTS(
+            SELECT *
+            FROM IngredientsWarehouse
+            WHERE IngredientID = @IngredientID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Ingredient with provided ID does not exist', 1
+			END
+
+	INSERT INTO ProductIngredients(ProductID, IngredientID)
+	VALUES (@ProductID, @IngredientID);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error adding productID-ingredientID pair: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+CREATE PROCEDURE RemovePairFromProductIngredients
+@IngredientID int,
+@ProductID int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM ProductIngredients
+            WHERE IngredientID = @IngredientID
+			AND ProductID = @ProductID
+        )
+        BEGIN
+        ;
+        DELETE FROM ProductIngredients WHERE  IngredientID = @IngredientID AND ProductID = @ProductID
+        END
+    ELSE
+        BEGIN
+            ;
+            THROW 52000, 'Provided productID-ingredientID pair does not exist', 1 
+        END
+      
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error removing productID-ingredientID pair: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
