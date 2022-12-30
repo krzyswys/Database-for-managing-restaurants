@@ -258,6 +258,7 @@ BEGIN
 END
 go
 
+--
 CREATE PROCEDURE AddMenuProcedure
 @MenuName varchar(64),
 @FromTime datetime,
@@ -323,7 +324,8 @@ BEGIN
 END
 go
 
-CREATE PROCEDURE AddIngredientToWarehouse1
+--
+CREATE PROCEDURE AddIngredientToWarehouse
 @IngredientName varchar(64),
 @QuantityLeft int
 
@@ -357,6 +359,7 @@ BEGIN
 END
 go
 
+--
 CREATE PROCEDURE RemoveIngredientFromWarehouse
 @IngredientID int
 
@@ -388,7 +391,8 @@ BEGIN
 END
 go
 
-CREATE PROCEDURE AddPairToProductIngredients
+--
+CREATE PROCEDURE AddIngredientToProduct
 @ProductID int,
 @IngredientID int
 
@@ -437,7 +441,8 @@ BEGIN
 END
 go
 
-CREATE PROCEDURE RemovePairFromProductIngredients
+--
+CREATE PROCEDURE RemoveIngredientFromProduct
 @IngredientID int,
 @ProductID int
 
@@ -465,6 +470,90 @@ BEGIN
     BEGIN CATCH
         DECLARE @errormsg nvarchar(2048) =
                     'Error removing productID-ingredientID pair: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+--
+CREATE PROCEDURE AddProductToMenuProcedure
+@ProductID int,
+@MenuID int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM MenuDetails
+            WHERE MenuID = @MenuID
+			AND ProductID = @ProductID
+        )
+			BEGIN
+				;
+				THROW 52000, 'This productID-menuID pair already exists', 1
+			END
+		IF NOT EXISTS(
+            SELECT *
+            FROM Products
+            WHERE ProductID = @ProductID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Product with provided ID does not exist', 1
+			END
+		IF NOT EXISTS(
+            SELECT *
+            FROM Menu
+            WHERE MenuID = @MenuID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Menu with provided ID does not exist', 1
+			END
+
+	INSERT INTO MenuDetails(MenuID, ProductID)
+	VALUES (@MenuID, @ProductID);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error adding productID-menuID pair: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+--
+CREATE PROCEDURE RemoveProductFromMenuProcedure
+@MenuID int,
+@ProductID int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM MenuDetails
+            WHERE MenuID = @MenuID
+			AND ProductID = @ProductID
+        )
+        BEGIN
+        ;
+        DELETE FROM MenuDetails WHERE  MenuID = @MenuID AND ProductID = @ProductID
+        END
+    ELSE
+        BEGIN
+            ;
+            THROW 52000, 'Provided productID-menuID pair does not exist', 1 
+        END
+      
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error removing productID-menuID pair: ' + ERROR_MESSAGE();
         THROW 52000, @errormsg, 1;
     END CATCH
 END
