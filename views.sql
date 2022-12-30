@@ -1,5 +1,3 @@
--- Views
-
 -- Current_Menu_View
 CREATE VIEW Current_Menu_View AS
 SELECT Products.ProductID ,Products.ProductName, ProductPrices.UnitPrice
@@ -10,6 +8,7 @@ WHERE MenuID = (SELECT MenuID
                 FROM Menu
                 WHERE ToTime IS NULL)
 AND ProductPrices.ToTime IS NULL
+go
 
 -- Available_Products_View
 CREATE VIEW Available_Products_View AS
@@ -19,6 +18,7 @@ from ProductIngredients
          JOIN Products ON ProductIngredients.ProductID = Products.ProductID
 GROUP BY Products.ProductID, ProductName
 HAVING MIN(QuantityLeft) > 0
+go
 
 -- Not_Available_Products_View
 CREATE VIEW Not_Available_Products_View AS
@@ -28,19 +28,21 @@ from ProductIngredients
          JOIN Products ON ProductIngredients.ProductID = Products.ProductID
 GROUP BY Products.ProductID, ProductName
 HAVING MIN(QuantityLeft) = 0
+go
 
 -- Not_Available_Ingredients_View
 CREATE VIEW Not_Available_Ingredients_View AS
 SELECT IngredientID, IngredientName
 from IngredientsWarehouse
 WHERE QuantityLeft = 0
-
+go
 
 --Not_Paid_Orders_View
 CREATE VIEW Not_Paid_Orders_View AS
 SELECT CustomerID, RestaurantEmployeeID, OrderID
 FROM Orders
 WHERE OrderStatus like '%not_paid%'
+go
 
 --Today_Reservations_View
 CREATE VIEW Today_Reservations_View AS
@@ -51,18 +53,21 @@ FROM Reservation
         JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
         JOIN CustomersPersonalData ON CustomersPersonalData.PersonID = IndividualCustomers.PersonID 
 WHERE FromTime = (SELECT CAST( GETDATE() AS Date )) 
+go
 
 --Orders_Pending_For_Confirmation_View
 CREATE VIEW Orders_Pending_For_Confirmation_View AS
 SELECT CustomerID, RestaurantEmployeeID, OrderID
 FROM Orders
 WHERE OrderStatus like '%not_confirmed%'
+go
 
 --Takaway_Orders_Pending_For_Pickup_View
-CREATE VIEW Takaway_Orders_Pending_For_Pickup_View AS
-SELECT CustomerID, RestaurantEmployeeID, OrderID
-FROM Orders
-WHERE Takeaway.PickupDate is NULL --?TODO: create a takeaway_status?
+--CREATE VIEW Takaway_Orders_Pending_For_Pickup_View AS
+--SELECT CustomerID, RestaurantEmployeeID, OrderID
+--FROM Orders
+--WHERE Takeaway. is NULL --?TODO: create a takeaway_status?
+--go
 
 --Order_Details_View
 CREATE VIEW Order_Details_View
@@ -78,7 +83,7 @@ FROM Orders
         JOIN Customers ON Customers.CustomerID = Orders.CustomerID
         JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
         JOIN CustomersPersonalData ON CustomersPersonalData.PersonID = IndividualCustomers.PersonID 
-		
+go
 		
 --Report_Of_Total_Orders_Products_Price_View
 CREATE VIEW Total_Orders_Products_Prices_Report_View AS
@@ -90,6 +95,7 @@ AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of orders for the
 (SELECT COUNT(OrderID) FROM Orders 
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
 AS [total number of orders for the last week],
+
 
 (SELECT SUM(Quantity) FROM OrderDetails INNER JOIN Orders ON Orders.OrderID = OrderDetails.OrderID
 WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
@@ -117,12 +123,14 @@ AND Orders.OrderDate >= ProductPrices.FromTime AND (ProductPrices.ToTime is NULL
 GROUP BY Orders.OrderID) AS table2 ) AS [total order price for the last week]
 
 FROM Orders 
+go
 
 --Average_Salary_Of_Restaurant_Employee_View
 CREATE VIEW Average_Salary_Of_Restaurant_Employee_View AS
 SELECT RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName, ROUND(AVG(Salary),2) as [srednie zarobki]
 FROM RestaurantEmployees INNER JOIN EmployeesSalary ON RestaurantEmployees.RestaurantEmployeeID = EmployeesSalary.RestaurantEmployeeID
 GROUP BY RestaurantEmployees.RestaurantEmployeeID ,FirstName,LastName
+go
 
 --Five_Best_Employees_View
 CREATE VIEW Five_Best_Employees_View AS
@@ -130,6 +138,7 @@ SELECT TOP 5 RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName FROM R
 INNER JOIN Orders ON Orders.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
 GROUP BY RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName
 ORDER BY COUNT(OrderID) DESC
+go
 
 --Total_Products_Sales_View
 CREATE VIEW Total_Products_Sales_View AS
@@ -137,6 +146,7 @@ SELECT ProductName, SUM(Quantity) AS TotalOrders
 FROM OrderDetails
 JOIN Products ON Products.ProductID = OrderDetails.ProductID
 GROUP BY ProductName
+go
 
 --Total_Categories_Sales_View
 CREATE VIEW Total_Categories_Sales_View AS
@@ -145,6 +155,7 @@ FROM OrderDetails
 JOIN Products ON Products.ProductID = OrderDetails.ProductID
 JOIN Categories ON Products.CategoryID = Categories.CategoryID
 GROUP BY Categories.CategoryName
+go
 
 --Available_Tables_View
 CREATE VIEW Available_Tables_View AS
@@ -152,3 +163,4 @@ SELECT DISTINCT DiningTables.DiningTableID, DiningTables.NumberOfSeats
 FROM Reservation
 JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID
 WHERE ToTime < GETDATE()
+go
