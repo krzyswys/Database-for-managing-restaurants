@@ -99,7 +99,7 @@ CREATE TABLE Orders
     CustomerID           int    NOT NULL,
     OrderDate            datetime    NOT NULL,
     PaymentDate          datetime    NULL DEFAULT NULL,
-    PayVia               char(10)    NULL,
+    PayVia               int    NULL,
     OrderStatus          varchar(64) NOT NULL,
     RestaurantEmployeeID int    NOT NULL,
     CONSTRAINT Orders_pk PRIMARY KEY (OrderID)
