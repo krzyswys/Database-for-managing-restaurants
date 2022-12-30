@@ -258,7 +258,7 @@ BEGIN
 END
 go
 
---
+-- AddMenuProcedure
 CREATE PROCEDURE AddMenuProcedure
 @MenuName varchar(64),
 @FromTime datetime,
@@ -293,7 +293,7 @@ BEGIN
 END
 go
 
---
+-- RemoveMenuProcedure
 CREATE PROCEDURE RemoveMenuProcedure
 @MenuID int
 AS
@@ -324,7 +324,7 @@ BEGIN
 END
 go
 
---
+-- AddIngredientToWarehouse
 CREATE PROCEDURE AddIngredientToWarehouse
 @IngredientName varchar(64),
 @QuantityLeft int
@@ -359,7 +359,7 @@ BEGIN
 END
 go
 
---
+-- RemoveIngredientFromWarehouse
 CREATE PROCEDURE RemoveIngredientFromWarehouse
 @IngredientID int
 
@@ -391,7 +391,7 @@ BEGIN
 END
 go
 
---
+-- AddIngredientToProduct
 CREATE PROCEDURE AddIngredientToProduct
 @ProductID int,
 @IngredientID int
@@ -441,7 +441,7 @@ BEGIN
 END
 go
 
---
+-- RemoveIngredientFromProduct
 CREATE PROCEDURE RemoveIngredientFromProduct
 @IngredientID int,
 @ProductID int
@@ -475,7 +475,7 @@ BEGIN
 END
 go
 
---
+-- AddProductToMenuProcedure
 CREATE PROCEDURE AddProductToMenuProcedure
 @ProductID int,
 @MenuID int
@@ -525,7 +525,7 @@ BEGIN
 END
 go
 
---
+-- RemoveProductFromMenuProcedure
 CREATE PROCEDURE RemoveProductFromMenuProcedure
 @MenuID int,
 @ProductID int
