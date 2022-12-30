@@ -83,7 +83,7 @@ insert into Products (ProductID, ProductName, CategoryID)
 values (3, 'Orange Juice', 1);
 
 insert into Products (ProductID, ProductName, CategoryID)
-values (4, 'Pizza Margherita', '3);
+values (4, 'Pizza Margherita', 3);
 
 insert into Products (ProductID, ProductName, CategoryID)
 values (5, 'Pizza Diabolo', 3);
