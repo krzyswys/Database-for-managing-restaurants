@@ -145,3 +145,49 @@ CREATE FUNCTION GetProductsFromMenu(@MenuID int)
 		JOIN Products ON Products.ProductID = MenuDetails.ProductID
 		WHERE Menu.MenuID = @MenuID
 GO
+
+-- GetCurrentEmployeeSalary
+CREATE FUNCTION GetCurrentEmployeeSalary(@EmployeeID int)
+RETURNS table
+AS
+RETURN
+   SELECT Salary
+   FROM EmployeesSalary
+   WHERE RestaurantEmployeeID = @EmployeeID
+   AND ToTime IS NULL
+GO
+
+-- GetCurrentHighestSalaryForOccupation
+CREATE FUNCTION GetCurrentHighestSalaryForOccupation(@Occupation varchar(64))
+RETURNS table
+AS
+RETURN
+   SELECT AVG(Salary) AS AveragePriceForOccupation
+   FROM EmployeesSalary
+   JOIN RestaurantEmployees ON EmployeesSalary.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
+   WHERE Occupation = @Occupation
+   AND ToTime IS NULL
+GO
+
+-- GetTotalProductsAndAveragePriceOfMenu
+CREATE FUNCTION GetTotalProductsAndAveragePriceOfMenu(@MenuID int)
+RETURNS table
+AS
+RETURN
+   SELECT COUNT(UnitPrice) AS TotalProducts, AVG(UnitPrice) AS AverageUnitPrice
+   FROM Menu
+   JOIN MenuDetails ON Menu.MenuID = MenuDetails.MenuID
+   JOIN ProductPrices ON MenuDetails.ProductID = ProductPrices.ProductID
+   WHERE Menu.MenuID = @MenuID
+   AND ProductPrices.ToTime IS NULL
+GO
+
+-- GetHighestSalaryForEmployee
+CREATE FUNCTION GetHighestSalaryForEmployee(@EmployeeID int)
+RETURNS table
+AS
+RETURN
+   SELECT MAX(Salary) AS MaxEmployeeSalary
+   FROM EmployeesSalary
+   WHERE RestaurantEmployeeID = @EmployeeID
+GO
