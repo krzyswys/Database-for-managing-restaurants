@@ -157,8 +157,8 @@ RETURN
    AND ToTime IS NULL
 GO
 
--- GetCurrentHighestSalaryForOccupation
-CREATE FUNCTION GetCurrentHighestSalaryForOccupation(@Occupation varchar(64))
+-- GetCurrentAverageSalaryForOccupation
+CREATE FUNCTION GetCurrentAverageSalaryForOccupation(@Occupation varchar(64))
 RETURNS table
 AS
 RETURN
