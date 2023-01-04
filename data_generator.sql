@@ -323,3 +323,29 @@ values (3, 10);
 
 insert into MenuDetails (MenuID, ProductID)
 values (3, 12);
+
+--RestaurantEmployees
+insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
+values (1, 'Jan', 'Nowak', 'waiter', 'Kawiory 18', 'Poland', 'Kraków', '30-072', '123123123', 'jan_nowak@mail.com');
+
+insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
+values (2, 'Julia', 'Kowalska', 'chef', 'Rostafińskiego 11', 'Poland', 'Kraków', '30-012', '111111111', 'julia_kowalska@mail.com');
+
+insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
+values (3, 'Anna', 'Madej', 'waiter', 'Wojska Polskiego 303', 'Poland', 'Kraków', '30-050', '222222222', 'anna_madej@mail.com');
+
+insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
+values (4, 'Michał', 'Król', 'cleaner', 'Kawiory 49', 'Poland', 'Kraków', '30-072', '212212212', 'michal_krol@mail.com');
+
+--EmployeesSalary
+insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
+values (1, '2022-01-02 11:36:14.840', NULL, 4000);
+
+insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
+values (2, '2022-05-05 11:36:14.840', NULL, 6000);
+
+insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
+values (3, '2022-12-15 11:36:14.840', NULL, 4200);
+
+insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
+values (4, '2022-08-08 11:36:14.840', NULL, 3500);
