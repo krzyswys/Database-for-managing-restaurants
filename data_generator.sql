@@ -1,351 +1,150 @@
 --Categories
-insert into Categories (CategoryID, CategoryName)
-values (1, 'Beverages');
-
-insert into Categories (CategoryID, CategoryName)
-values (2, 'Seafood');
-
-insert into Categories (CategoryID, CategoryName)
-values (3, 'Pizza');
-
-insert into Categories (CategoryID, CategoryName)
-values (4, 'Pasta');
-
-insert into Categories (CategoryID, CategoryName)
-values (5, 'Desserts');
-
-insert into Categories (CategoryID, CategoryName)
-values (6, 'Pizza');
+INSERT INTO Categories (CategoryID, CategoryName)
+VALUES 
+	(1, 'Beverages'),
+	(2, 'Seafood'),
+	(3, 'Pizza'),
+	(4, 'Pasta'),
+	(5, 'Desserts'),
+	(6, 'Pizza');
 
 --IngredientsWarehouse
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (1, 'Flour', 100);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (2, 'Peperoni', 30);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (3, 'Lemon', 0);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (4, 'Water', 100);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (5, 'Orange', 33);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (6, 'Cheese', 20);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (7, 'Tomato Sauce', 200);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (8, 'Jalapeno Pepper', 10);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (9, 'Beans', 15);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (10, 'Pepperoni', 0);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (11, 'Prawns', 18);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (12, 'Fries', 200);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (13, 'Lobster', 0);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (14, 'Bread', 28);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (15, 'Milk', 0);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (16, 'Octopus', 11);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (17, 'Chicken', 22);
-
-insert into IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
-values (18, 'Oyster', 16);
+INSERT INTO IngredientsWarehouse (IngredientID, IngredientName, QuantityLeft)
+VALUES 
+	(1, 'Flour', 100),
+	(2, 'Peperoni', 30),
+	(3, 'Lemon', 0),
+	(4, 'Water', 100),
+	(5, 'Orange', 33),
+	(6, 'Cheese', 20),
+	(7, 'Tomato Sauce', 200),
+	(8, 'Jalapeno Pepper', 10),
+	(9, 'Beans', 15),
+	(10, 'Pepperoni', 0),
+	(11, 'Prawns', 18),
+	(12, 'Fries', 200),
+	(13, 'Lobster', 0),
+	(14, 'Bread', 28),
+	(15, 'Milk', 0),
+	(16, 'Octopus', 11),
+	(17, 'Chicken', 22),
+	(18, 'Oyster', 16);
 
 --Products
-insert into Products (ProductID, ProductName, CategoryID)
-values (1, 'Lemonade', 1);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (2, 'Water', 1);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (3, 'Orange Juice', 1);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (4, 'Pizza Margherita', 3);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (5, 'Pizza Diabolo', 3);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (6, 'Pizza Mexicana', 3);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (7, 'Pizza Pepperoni', 3);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (8, 'Prawns and Fries', 2);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (9, 'Lobster and Bread', 2);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (10, 'Octopus and Fries', 2);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (11, 'Pizza Chicken', 3);
-
-insert into Products (ProductID, ProductName, CategoryID)
-values (12, 'Oyster and Bread', 2);
+INSERT INTO Products (ProductID, ProductName, CategoryID)
+VALUES 
+	(1, 'Lemonade', 1),
+	(2, 'Water', 1),
+	(3, 'Orange Juice', 1),
+	(4, 'Pizza Margherita', 3),
+	(5, 'Pizza Diabolo', 3),
+	(6, 'Pizza Mexicana', 3),
+	(7, 'Pizza Pepperoni', 3),
+	(8, 'Prawns and Fries', 2),
+	(9, 'Lobster and Bread', 2),
+	(10, 'Octopus and Fries', 2),
+	(11, 'Pizza Chicken', 3),
+	(12, 'Oyster and Bread', 2);
 
 --ProductIngredients
-insert into ProductIngredients (ProductID, IngredientID)
-values (1, 3);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (1, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (2, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (3, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (3, 5);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (4, 1);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (4, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (4, 6);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (4, 7);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (5, 1);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (5, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (5, 6);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (5, 7);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (5, 8);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (6, 1);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (6, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (6, 6);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (6, 7);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (6, 9);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (7, 1);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (7, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (7, 6);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (7, 7);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (7, 10);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (8, 11);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (8, 12);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (9, 13);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (9, 14);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (10, 12);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (10, 16);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (11, 1);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (11, 4);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (11, 6);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (11, 7);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (11, 17);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (12, 14);
-
-insert into ProductIngredients (ProductID, IngredientID)
-values (12, 18);
+INSERT INTO ProductIngredients (ProductID, IngredientID)
+VALUES
+	(1, 3),
+	(1, 4),
+	(2, 4),
+	(3, 4),
+	(3, 5),
+	(4, 1),
+	(4, 4),
+	(4, 6),
+	(4, 7),
+	(5, 1),
+	(5, 4),
+	(5, 6),
+	(5, 7),
+	(5, 8),
+	(6, 1),
+	(6, 4),
+	(6, 6),
+	(6, 7),
+	(6, 9),
+	(7, 1),
+	(7, 4),
+	(7, 6),
+	(7, 7),
+	(7, 10),
+	(8, 11),
+	(8, 12),
+	(9, 13),
+	(9, 14),
+	(10, 12),
+	(10, 16),
+	(11, 1),
+	(11, 4),
+	(11, 6),
+	(11, 7),
+	(11, 17),
+	(12, 14),
+	(12, 18);
 
 --ProductPrices
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (1, '2022-01-02 11:36:14.840', NULL, 30);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (2, '2022-01-02 11:36:14.840', NULL, 40);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (3, '2022-01-02 11:36:14.840', NULL, 35);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (4, '2022-01-02 11:36:14.840', NULL, 50);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (5, '2022-01-02 11:36:14.840', NULL, 10);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (6, '2022-01-02 11:36:14.840', NULL, 70);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (7, '2022-01-02 11:36:14.840', NULL, 45);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (8, '2022-01-02 11:36:14.840', NULL, 15);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (9, '2022-01-02 11:36:14.840', NULL, 25);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (10, '2022-01-02 11:36:14.840', NULL, 55);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (11, '2022-01-02 11:36:14.840', NULL, 40);
-
-insert into ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
-values (12, '2022-01-02 11:36:14.840', NULL, 100);
+INSERT INTO ProductPrices (ProductID, FromTime, ToTime, UnitPrice)
+VALUES 
+	(1, '2022-01-02 11:36:14.840', NULL, 30),
+	(2, '2022-01-02 11:36:14.840', NULL, 40),
+	(3, '2022-01-02 11:36:14.840', NULL, 35),
+	(4, '2022-01-02 11:36:14.840', NULL, 50),
+	(5, '2022-01-02 11:36:14.840', NULL, 10),
+	(6, '2022-01-02 11:36:14.840', NULL, 70),
+	(7, '2022-01-02 11:36:14.840', NULL, 45),
+	(8, '2022-01-02 11:36:14.840', NULL, 15),
+	(9, '2022-01-02 11:36:14.840', NULL, 25),
+	(10, '2022-01-02 11:36:14.840', NULL, 55),
+	(11, '2022-01-02 11:36:14.840', NULL, 40),
+	(12, '2022-01-02 11:36:14.840', NULL, 100);
 
 --Menu
-insert into Menu (MenuID, MenuName, FromTime, ToTime)
-values (1, 'Current', '2022-12-05 11:36:14.840', NULL);
-
-insert into Menu (MenuID, MenuName, FromTime, ToTime)
-values (2, 'Previous1', '2022-01-02 11:36:14.840', '2022-12-04 11:36:14.840');
-
-insert into Menu (MenuID, MenuName, FromTime, ToTime)
-values (3, 'Previous2', '2021-02-05 11:36:14.840', '2022-01-01 11:36:14.840');
+INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
+VALUES 
+	(1, 'Current', '2022-12-05 11:36:14.840', NULL),
+	(2, 'Previous1', '2022-01-02 11:36:14.840', '2022-12-04 11:36:14.840'),
+	(3, 'Previous2', '2021-02-05 11:36:14.840', '2022-01-01 11:36:14.840');
 
 
 --MenuDetails
-insert into MenuDetails (MenuID, ProductID)
-values (1, 1);
-
-insert into MenuDetails (MenuID, ProductID)
-values (1, 2);
-
-insert into MenuDetails (MenuID, ProductID)
-values (1, 3);
-
-insert into MenuDetails (MenuID, ProductID)
-values (1, 5);
-
-insert into MenuDetails (MenuID, ProductID)
-values (1, 11);
-
-insert into MenuDetails (MenuID, ProductID)
-values (1, 12);
-
-insert into MenuDetails (MenuID, ProductID)
-values (2, 2);
-
-insert into MenuDetails (MenuID, ProductID)
-values (2, 6);
-
-insert into MenuDetails (MenuID, ProductID)
-values (2, 7);
-
-insert into MenuDetails (MenuID, ProductID)
-values (2, 8);
-
-insert into MenuDetails (MenuID, ProductID)
-values (2, 9);
-
-insert into MenuDetails (MenuID, ProductID)
-values (2, 10);
-
-insert into MenuDetails (MenuID, ProductID)
-values (3, 2);
-
-insert into MenuDetails (MenuID, ProductID)
-values (3, 4);
-
-insert into MenuDetails (MenuID, ProductID)
-values (3, 6);
-
-insert into MenuDetails (MenuID, ProductID)
-values (3, 8);
-
-insert into MenuDetails (MenuID, ProductID)
-values (3, 10);
-
-insert into MenuDetails (MenuID, ProductID)
-values (3, 12);
+INSERT INTO MenuDetails (MenuID, ProductID)
+VALUES 
+	(1, 1),
+	(1, 2),
+	(1, 3),
+	(1, 5),
+	(1, 11),
+	(1, 12),
+	(2, 2),
+	(2, 6),
+	(2, 7),
+	(2, 8),
+	(2, 9),
+	(2, 10),
+	(3, 2),
+	(3, 4),
+	(3, 6),
+	(3, 8),
+	(3, 10),
+	(3, 12);
 
 --RestaurantEmployees
-insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
-values (1, 'Jan', 'Nowak', 'waiter', 'Kawiory 18', 'Poland', 'Kraków', '30-072', '123123123', 'jan_nowak@mail.com');
-
-insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
-values (2, 'Julia', 'Kowalska', 'chef', 'Rostafińskiego 11', 'Poland', 'Kraków', '30-012', '111111111', 'julia_kowalska@mail.com');
-
-insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
-values (3, 'Anna', 'Madej', 'waiter', 'Wojska Polskiego 303', 'Poland', 'Kraków', '30-050', '222222222', 'anna_madej@mail.com');
-
-insert into RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
-values (4, 'Michał', 'Król', 'cleaner', 'Kawiory 49', 'Poland', 'Kraków', '30-072', '212212212', 'michal_krol@mail.com');
+INSERT INTO RestaurantEmployees (RestaurantEmployeeID, FirstName, LastName, Occupation, Street, Country, City, PostCode, Phone, Email)
+VALUES 
+	(1, 'Jan', 'Nowak', 'waiter', 'Kawiory 18', 'Poland', 'Kraków', '30-072', '123123123', 'jan_nowak@mail.com'),
+	(2, 'Julia', 'Kowalska', 'chef', 'Rostafińskiego 11', 'Poland', 'Kraków', '30-012', '111111111', 'julia_kowalska@mail.com'),
+	(3, 'Anna', 'Madej', 'waiter', 'Wojska Polskiego 303', 'Poland', 'Kraków', '30-050', '222222222', 'anna_madej@mail.com'),
+	(4, 'Michał', 'Król', 'cleaner', 'Kawiory 49', 'Poland', 'Kraków', '30-072', '212212212', 'michal_krol@mail.com');
 
 --EmployeesSalary
-insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
-values (1, '2022-01-02 11:36:14.840', NULL, 4000);
-
-insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
-values (2, '2022-05-05 11:36:14.840', NULL, 6000);
-
-insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
-values (3, '2022-12-15 11:36:14.840', NULL, 4200);
-
-insert into EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
-values (4, '2022-08-08 11:36:14.840', NULL, 3500);
+INSERT INTO EmployeesSalary (RestaurantEmployeeID, FromTime, ToTime, Salary)
+VALUES 
+	(1, '2022-01-02 11:36:14.840', NULL, 4000),
+	(2, '2022-05-05 11:36:14.840', NULL, 6000),
+	(3, '2022-12-15 11:36:14.840', NULL, 4200),
+	(4, '2022-08-08 11:36:14.840', NULL, 3500);
