@@ -1,5 +1,3 @@
-use u_wilkusz
-
 DECLARE @sql NVARCHAR(max)=''
 
 -- drop constraints
