@@ -1,4 +1,3 @@
-
 -- dodawanie kategorii
 CREATE PROCEDURE AddCategoryProcedure
 @CategoryName varchar(64)
@@ -43,9 +42,10 @@ BEGIN
         )
             BEGIN
             ;
-            DELETE FROM Categories WHERE WHERE @CategoryName = CategoryName
+            DELETE FROM Categories WHERE @CategoryName = CategoryName
             
          end
+	ELSE
        THROW 52000, 'Kategoria jest już dodana', 1 -- nwm o co chodzi z tymi numerami
     END TRY
     BEGIN CATCH
@@ -60,7 +60,7 @@ go
 
 -- dodawanie produktu
 CREATE PROCEDURE AddProductProcedure
-@CategoryName varchar(64)
+@CategoryName varchar(64),
 @Name varchar(64)
 AS
 BEGIN
@@ -91,7 +91,7 @@ BEGIN
     DECLARE @ProductID INT
     SELECT @ProductID = ISNULL(MAX(ProductID), 0) + 1
     FROM Products
-    INSERT INTO Products(ProductID, Name, CategoryID)
+    INSERT INTO Products(ProductID, ProductName, CategoryID)
     VALUES (@ProductID, @Name, @CategoryID);
 
     END TRY
@@ -105,7 +105,7 @@ go
 
 -- usunięcie produktu
 CREATE PROCEDURE RemoveProductProcedure
-@CategoryName varchar(64)
+@CategoryID int,
 @Name varchar(64)
 AS
 BEGIN
@@ -118,12 +118,12 @@ BEGIN
         )
         BEGIN
         ;
-        DELETE FROM Products WHERE  @CategoryName = CategoryName AND @Name=ProductName
+        DELETE FROM Products WHERE  @CategoryID = Products.CategoryID AND @Name=ProductName
         END
     IF NOT EXISTS(
         SELECT *
             FROM Categories
-            WHERE CategoryName = @CategoryName
+            WHERE @CategoryID = CategoryID 
         )
         BEGIN
             ;
@@ -148,9 +148,9 @@ BEGIN
     SET NOCOUNT ON
     BEGIN TRY
         DECLARE @DinigTableID INT
-        SELECT @DinigTableID = ISNULL(MAX(DinigTableID), 0) + 1
+        SELECT @DinigTableID = ISNULL(MAX(DiningTables.DiningTableID), 0) + 1
         FROM DiningTables
-        INSERT INTO DiningTables(DinigTableID, NumberOfSeats)
+        INSERT INTO DiningTables(DiningTables.DiningTableID, NumberOfSeats)
         VALUES(@DinigTableID, @capacity);
     END TRY
     BEGIN CATCH
@@ -171,11 +171,11 @@ BEGIN
         IF EXISTS(
             SELECT *
             FROM DiningTables
-            WHERE DinigTableID = @tableID
+            WHERE DiningTableID = @tableID
         )
         BEGIN
         ;
-        DELETE FROM DiningTables WHERE  @tableID = DinigTableID
+        DELETE FROM DiningTables WHERE  @tableID = DiningTableID
         END
       
     END TRY
@@ -193,14 +193,14 @@ go
 
 -- dodawanie pracownika
 CREATE PROCEDURE AddEmployeeProcedure
-@FirstName varchar(64) 
-@LastName varchar(64) 
-@Occupation varchar(64)
-@Street varchar(64) 
-@Country varchar(64) 
-@City varchar(64) 
-@PostCode varchar(16) 
-@Phone char(9)   
+@FirstName varchar(64), 
+@LastName varchar(64), 
+@Occupation varchar(64),
+@Street varchar(64), 
+@Country varchar(64), 
+@City varchar(64), 
+@PostCode varchar(16), 
+@Phone char(9),   
 @Email varchar(64)
 
 AS
@@ -219,7 +219,7 @@ BEGIN
     
     DECLARE @RestaurantEmployeeID INT
     SELECT @RestaurantEmployeeID = ISNULL(MAX(RestaurantEmployeeID), 0) + 1
-    FROM RestaurantEmployeeID
+    FROM RestaurantEmployees
     INSERT INTO RestaurantEmployees(RestaurantEmployeeID,FirstName, LastName, Occupation, Street, Country, City, PostCode,Phone,Email)
     VALUES (@RestaurantEmployeeID, @FirstName, @LastName, @Occupation, @Street, @Country, @City, @PostCode,@Phone,@Email);
 
@@ -247,16 +247,18 @@ BEGIN
         )
         BEGIN
         ;
-        DELETE FROM Products WHERE  @RestaurantEmployeeID = RestaurantEmployeeID 
+        DELETE FROM RestaurantEmployees 
+		WHERE  @RestaurantEmployeeID = RestaurantEmployeeID 
         END
     END TRY
     BEGIN CATCH
         DECLARE @errormsg nvarchar(2048) =
-                    'Błąd usuwania produktu: ' + ERROR_MESSAGE();
+                    'Błąd usuwania pracownika: ' + ERROR_MESSAGE();
         THROW 52000, @errormsg, 1;
     END CATCH
 END
 go
+
 
 -- AddMenuProcedure
 CREATE PROCEDURE AddMenuProcedure
