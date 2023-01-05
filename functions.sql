@@ -1,10 +1,10 @@
 -- Wypisz zamówienie po id
-CREATE FUNCTION GetValueOfOrder(@input int)
+CREATE FUNCTION GetDetailsOfOrder(@input int)
     RETURNS table AS
         RETURN
-        SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as cena, Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia as rodzaj płatności, RestaurantEmployees.FirstName as imie obsługującego pracownika, Customers.Email as kontakt do klienta
+        SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as cena, Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia as rodzaj_płatności--, RestaurantEmployees.FirstName as imie_obsługującego_pracownika, Customers.Email as kontakt_do_klienta
         FROM Orders
-        INNER JOIN OrderDetails.OrderID ON OrderDetails.OrderID = Orders.OrderID
+        INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         WHERE Orders.OrderID = @input
@@ -12,7 +12,7 @@ go
 
 -- sprawdzenie stanu zamówienia po id
 CREATE FUNCTION GetStateOfOrder(@input int)
-    RETURNS text AS
+    RETURNS table AS
         RETURN
         SELECT Orders.OrderStatus
         FROM Orders
@@ -24,20 +24,12 @@ go
 CREATE FUNCTION GetDataOfEmployeee(@input int)
     RETURNS table AS
         RETURN
-        SELECT Imie: RestaurantEmployees.FirstName, Nazwisko: RestaurantEmployees.LastName, Dane kontaktowe: RestaurantEmployees.AdressDetails,Stanowisko: RestaurantEmployees.Occupation,Zatrudniony od: EmployeesSalary.FromTime, do: EmployeesSalary.ToTime, EmployeesSalary.Value
-        INNER JOIN EmployeesSalary ON EmployeesSalary.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
+        SELECT RestaurantEmployees.FirstName as Imie, RestaurantEmployees.LastName as Nazwisko,  RestaurantEmployees.Phone as DaneKontaktowe, RestaurantEmployees.Occupation as Stanowisko, EmployeesSalary.FromTime as ZatrudnionyOd,  EmployeesSalary.ToTime as ZatrudnionyDo, EmployeesSalary.Salary
         FROM RestaurantEmployees
+		INNER JOIN EmployeesSalary ON EmployeesSalary.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
         WHERE RestaurantEmployees.RestaurantEmployeeID = @input
 go
 
--- sprawdzenie stanu rezerwacji id
-CREATE FUNCTION GetStateOfReservation(@input int)
-    RETURNS text AS
-        RETURN
-        SELECT IF(Reservation.FromTime< GETDATE(), "Nie rozpoczęto", IF(Reservation.ToTime< GETDATE(), "Zakończono", "W trakcie"))
-        FROM Reservation
-        WHERE Reservation.ReservationID = @input
-go
 
 -- zamówienia powyżej jakiejś wartości
 CREATE FUNCTION GetOrdersAboveValue(@input int)
@@ -45,19 +37,19 @@ CREATE FUNCTION GetOrdersAboveValue(@input int)
         RETURN
         SELECT Orders.OrderID, Orders.OrderStatus, OrderDetails.Quantity*ProductPrices.UnitPrice as cena
         FROM Orders
-        INNER JOIN OrderDetails.OrderID ON OrderDetails.OrderID = Orders.OrderID
+        INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
-        WHERE cena > @input
+        WHERE OrderDetails.Quantity*ProductPrices.UnitPrice > @input
 go
 
 -- suma zamówień danego dnia
-CREATE FUNCTION udfgetValueOfOrdersOnDay(@date date)
-    RETURNS int AS
+CREATE FUNCTION GetValueOfOrdersOnDay(@date date)
+    RETURNS table AS
         RETURN  
-        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice)
+        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as Suma
         FROM Orders
-        INNER JOIN OrderDetails.OrderID ON OrderDetails.OrderID = Orders.OrderID
+        INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         WHERE YEAR(@date) = YEAR(Orders.OrderDate)
@@ -65,12 +57,12 @@ CREATE FUNCTION udfgetValueOfOrdersOnDay(@date date)
         AND DAY(@date) = DAY(Orders.OrderDate)
 go
 -- suma zamówień danego miesiąca
-CREATE FUNCTION udfgetValueOfOrdersOnDay(@date date)
-    RETURNS int AS
-        RETURN  
-        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice)
+CREATE FUNCTION GetValueOfOrdersOnMonth(@date date)
+    RETURNS table AS
+        RETURN
+        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as Suma
         FROM Orders
-        INNER JOIN OrderDetails.OrderID ON OrderDetails.OrderID = Orders.OrderID
+        INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         WHERE YEAR(@date) = YEAR(Orders.OrderDate)
@@ -79,21 +71,21 @@ go
 
 -- wartosc X zamówienia
 CREATE FUNCTION GetValueOfOrder(@input int)
-    RETURNS int AS
+    RETURNS table AS
         RETURN
         SELECT  OrderDetails.Quantity*ProductPrices.UnitPrice as cena
         FROM Orders
-        INNER JOIN OrderDetails.OrderID ON OrderDetails.OrderID = Orders.OrderID
+        INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         WHERE Orders.OrderID = @input
 go
 
--- wartosc najtańszy produkt o nazwie
+-- wartosc najtańszy produkt w kategorii
 CREATE FUNCTION GetCheapestProductInCategory(@input int)
-    RETURNS int AS
+    RETURNS table AS
         RETURN
-        SELECT TOP ProductPrices.UnitPrice as cena, ProductName
+        SELECT TOP(1) ProductPrices.UnitPrice as cena, ProductName
         FROM Products
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         INNER JOIN Categories ON Categories.CategoryID = Products.CategoryID
@@ -101,16 +93,17 @@ CREATE FUNCTION GetCheapestProductInCategory(@input int)
         ORDER BY cena DESC
 go
 
--- wartosc najdroższy produkt o nazwie
-CREATE FUNCTION GetCheapestProductInCategory(@input char)
-    RETURNS int AS
+-- wartosc najdroższy produkt w kategorii
+CREATE FUNCTION GetMostExpensiveProductInCategory(@input char)
+    RETURNS table AS
         RETURN
-        SELECT TOP ProductPrices.UnitPrice as cena, ProductName
+        SELECT TOP(1) ProductPrices.UnitPrice as cena, ProductName
         FROM Products
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         INNER JOIN Categories ON Categories.CategoryID = Products.CategoryID
         WHERE Categories.CategoryID = @input
 go
+
 
 -- GetIngredientsForProduct
 CREATE FUNCTION GetIngredientsForProduct(@ProductID int)
