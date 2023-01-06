@@ -717,3 +717,44 @@ BEGIN
 END
 go
 
+--dodanie dla danej zmiennej nowego czasu, aktualizacja dotychczasowej komorki z NULL'em w toTime
+
+CREATE PROCEDURE updateDiscountProcedure
+@VariableType varchar(3),
+@VariableValue int
+
+AS
+BEGIN 
+	SET NOCOUNT ON
+	BEGIN TRY
+		IF NOT EXISTS(
+            SELECT *
+            FROM VariablesData
+            WHERE VariableType = @VariableType
+        )
+			BEGIN
+				;
+				THROW 52000, 'this type of discount does not exist', 1
+			END
+		
+		
+		IF EXISTS(
+			SELECT * FROM VariablesData WHERE VariableType = @VariableType AND ToTime IS NULL
+		)
+		BEGIN 
+			;
+			UPDATE VariablesData SET ToTime = GETDATE() WHERE ToTime IS NULL  AND VariableType = @VariableType
+		END
+
+	    INSERT INTO VariablesData(FromTime,ToTime,VariableType,VariableValue)
+			VALUES (GETDATE(),NULL,@VariableType,@VariableValue);
+			
+			
+	END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Błąd aktualizacji rabatu: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
