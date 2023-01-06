@@ -98,6 +98,7 @@ CREATE TABLE Orders
     OrderID              int    NOT NULL,
     CustomerID           int    NOT NULL,
     OrderDate            datetime    NOT NULL,
+    CollectDate          datetime   NULL
     PaymentDate          datetime    NULL DEFAULT NULL,
     PayVia               int    NULL,
     OrderStatus          varchar(64) NOT NULL,
