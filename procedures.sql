@@ -560,3 +560,93 @@ BEGIN
     END CATCH
 END
 go
+
+
+
+-- AddProductToOrderProcedure
+CREATE PROCEDURE AddProductToOrder
+@ProductID int,
+@OrderID int,
+@Quantity int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM OrderDetails
+            WHERE OrderID = @OrderID
+			AND ProductID = @ProductID
+        )
+			BEGIN
+				;
+				THROW 52000, 'This productID-orderID pair already exists', 1
+			END
+		IF NOT EXISTS(
+            SELECT *
+            FROM Products
+            WHERE ProductID = @ProductID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Product with provided ID does not exist', 1
+			END
+		IF NOT EXISTS(
+            SELECT *
+            FROM Orders
+            WHERE OrderID = @OrderID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Order with provided ID does not exist', 1
+			END
+
+	INSERT INTO OrderDetails(OrderID, ProductID,Quantity)
+	VALUES (@MenuID, @ProductID,@Quantity);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error adding productID-orderID pair: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+-- RemoveProductFromOrderProcedure
+CREATE PROCEDURE RemoveProductFromOrder
+@OrderID int,
+@ProductID int,
+@Quantity int
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM MenuDetails
+            WHERE OrderID = @OrderID
+			AND ProductID = @ProductID
+			AND Quantity = @Quantity
+        )
+        BEGIN
+        ;
+        DELETE FROM MenuDetails WHERE  MenuID = @MenuID AND ProductID = @ProductID AND Quantity = @Quantity
+        END
+    ELSE
+        BEGIN
+            ;
+            THROW 52000, 'Provided productID-orderID pair does not exist', 1 
+        END
+      
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error removing productID-orderID pair: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
