@@ -1,5 +1,5 @@
--- MenuCorrectDateTrigger
-CREATE TRIGGER MenuCorrectDateTrigger
+-- MenuOneDayInAdvanceTrigger
+CREATE TRIGGER MenuOneDayInAdvanceTrigger
 	ON Menu
 	AFTER INSERT AS
 BEGIN
