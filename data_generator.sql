@@ -106,9 +106,13 @@ VALUES
 --Menu
 INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
 VALUES 
-	(1, 'Current', '2022-12-05 11:36:14.840', NULL),
-	(2, 'Previous1', '2022-01-02 11:36:14.840', '2022-12-04 11:36:14.840'),
-	(3, 'Previous2', '2021-02-05 11:36:14.840', '2022-01-01 11:36:14.840');
+	(1, 'Current', '2023-02-25 11:36:14.840', NULL);
+INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
+VALUES 
+	(2, 'Previous1', '2023-03-02 11:36:14.840', '2023-12-04 11:36:14.840');
+INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
+VALUES 
+	(3, 'Previous2', '2023-05-11 11:36:14.840', '2023-09-11 11:36:14.840');
 
 
 --MenuDetails
@@ -234,18 +238,30 @@ VALUES
 -- Orders
 INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
 VALUES
-	(1, 1, '2023-01-08 11:36:14.840', NULL, NULL, 2, 'awaiting payment', 1),
-	(2, 2, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3),
-	(3, 3, '2023-01-07 11:36:14.840', NULL, '2023-01-07 11:38:14.840', 2, 'in preparation', 1),
+	(1, 1, '2023-01-08 11:36:14.840', NULL, NULL, 2, 'awaiting payment', 1);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(2, 2, '2023-01-06 11:36:14.840', '2023-01-20 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(3, 3, '2023-01-07 11:36:14.840', NULL, '2023-01-07 11:38:14.840', 2, 'in preparation', 1);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
 	(4, 4, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1);
 
 -- OrderDetails
 INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
 VALUES 
-	-- OrderID: 1
-	(1, 1, 2),
-	(1, 4, 1),
-	-- OrderID: 2
-	(2, 2, 1),
-	(2, 5, 1),
+	(1, 1, 2);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(1, 4, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(2, 2, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(2, 5, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
 	(2, 9, 1);
