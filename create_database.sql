@@ -1628,12 +1628,3 @@ CREATE NONCLUSTERED INDEX OrderDetails_OrderID_Index ON OrderDetails (OrderID);
 
 -- Customers_CustomerID_Index
 CREATE UNIQUE NONCLUSTERED INDEX Customers_CustomerID_Index ON Customers (CustomerID);
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
