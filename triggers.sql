@@ -1,15 +1,15 @@
--- MenuOneDayInAdvanceTrigger
-CREATE TRIGGER MenuOneDayInAdvanceTrigger
+-- AddMenuOneDayInAdvanceTrigger
+CREATE TRIGGER AddMenuOneDayInAdvanceTrigger
 	ON Menu
 	AFTER INSERT AS
 BEGIN
 	DECLARE @InsertedMenuID int
 	SET @InsertedMenuID = (SELECT MAX(MenuID)
-						   FROM Menu)
+			       FROM Menu)
 	DECLARE @InsertedDate datetime
 	SET @InsertedDate = (SELECT FromTime
-						           FROM Menu
-						           WHERE MenuID = @InsertedMenuID)
+			     FROM Menu
+			     WHERE MenuID = @InsertedMenuID)
 	IF DATEDIFF(hour, GETDATE(), @InsertedDate) < 24
 		BEGIN
 			PRINT ('Adding new menu failed. Menu must be inserted with at least one day in advance')
