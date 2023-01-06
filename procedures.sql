@@ -305,7 +305,7 @@ BEGIN
         IF EXISTS(
             SELECT *
             FROM Menu
-            WHERE @MenuID = @MenuID
+            WHERE MenuID = @MenuID
         )
         BEGIN
         ;
@@ -706,7 +706,7 @@ BEGIN
         BEGIN
         ;
         DELETE FROM Customers 
-		WHERE  @CustomerID = CustomerID 
+		WHERE  CustomerID = @CustomerID 
         END
     END TRY
     BEGIN CATCH
@@ -758,3 +758,89 @@ BEGIN
     END CATCH
 END
 go
+
+
+-- AddReservationProcedure
+CREATE PROCEDURE AddReservationProcedure
+@FromTime      datetime ,
+@ToTime        datetime ,
+@Seats         int,
+@DiningTableID int,
+@OrderID       int
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF NOT EXISTS(
+		SELECT OrderID FROM Orders WHERE OrderID = @OrderID
+		)
+			BEGIN
+				;
+				THROW 52000, 'Provided OrderID is not in the database', 1
+			END
+		
+		IF NOT EXISTS(
+		SELECT DiningTableID FROM DiningTables WHERE DiningTableID = @DiningTableID
+		)
+			BEGIN
+				;
+				THROW 52000, 'Provided DiningTableID is not in the database', 1
+			END
+		
+		IF EXISTS(
+            SELECT *
+            FROM Reservation
+            WHERE OrderID = @OrderID AND DiningTableID = @DiningTableID
+        )
+			BEGIN
+				;
+				THROW 52000, 'Reservation with provided OrderID and DiningTableID is already in the database', 1
+			END
+
+    DECLARE @ReservationID INT
+		SELECT @ReservationID = ISNULL(MAX(ReservationID), 0) + 1
+		FROM Reservation
+
+	INSERT INTO Reservation(ReservationID, FromTime, ToTime, Seats,DiningTableID,OrderID)
+	VALUES (@ReservationID, @FromTime, @ToTime, @Seats,@DiningTableID,@OrderID);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error adding menu: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+-- RemoveReservationProcedure
+CREATE PROCEDURE RemoveReservationProcedure
+@ReservationID int
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM Reservation
+            WHERE ReservationID = @ReservationID
+        )
+        BEGIN
+        ;
+        DELETE FROM Reservation WHERE  @ReservationID = ReservationID
+        END
+    ELSE
+        BEGIN
+            ;
+            THROW 52000, 'Reservation with provided ID does not exist', 1 
+        END
+      
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Error removing menu: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
