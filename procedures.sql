@@ -603,7 +603,7 @@ BEGIN
 			END
 
 	INSERT INTO OrderDetails(OrderID, ProductID,Quantity)
-	VALUES (@MenuID, @ProductID,@Quantity);
+	VALUES (@OrderID, @ProductID,@Quantity);
 
     END TRY
     BEGIN CATCH
@@ -633,7 +633,7 @@ BEGIN
         )
         BEGIN
         ;
-        DELETE FROM OrderDetails WHERE  MenuID = @MenuID AND ProductID = @ProductID AND Quantity = @Quantity
+        DELETE FROM OrderDetails WHERE  OrderID = @OrderID AND ProductID = @ProductID AND Quantity = @Quantity
         END
     ELSE
         BEGIN
