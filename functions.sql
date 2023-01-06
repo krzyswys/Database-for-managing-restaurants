@@ -184,3 +184,14 @@ RETURN
    FROM EmployeesSalary
    WHERE RestaurantEmployeeID = @EmployeeID
 GO
+
+--Sprawdzenie ile dni pozostało na dane menu - pracownik
+CREATE FUNCTION RemainingDaysForMenu(@MenuID int)
+RETURNS table
+AS
+RETURN 
+	SELECT DATEDIFF(day, GETDATE(), (SELECT 
+		ToTime 
+		FROM Menu 
+		WHERE MenuID = MenuID ))
+GO
