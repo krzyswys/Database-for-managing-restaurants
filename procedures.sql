@@ -626,14 +626,14 @@ BEGIN
     BEGIN TRY
         IF EXISTS(
             SELECT *
-            FROM MenuDetails
+            FROM OrderDetails
             WHERE OrderID = @OrderID
 			AND ProductID = @ProductID
 			AND Quantity = @Quantity
         )
         BEGIN
         ;
-        DELETE FROM MenuDetails WHERE  MenuID = @MenuID AND ProductID = @ProductID AND Quantity = @Quantity
+        DELETE FROM OrderDetails WHERE  MenuID = @MenuID AND ProductID = @ProductID AND Quantity = @Quantity
         END
     ELSE
         BEGIN
