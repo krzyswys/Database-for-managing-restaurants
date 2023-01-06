@@ -328,7 +328,7 @@ ALTER TABLE Orders
     ADD CONSTRAINT Orders_PaymentMethod
         FOREIGN KEY (PayVia)
             REFERENCES PaymentMethod (PaymentID);
-            
+GO        
             
 -- VIEWS --
 CREATE VIEW Current_Menu_View AS
