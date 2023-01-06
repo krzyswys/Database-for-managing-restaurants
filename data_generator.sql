@@ -232,12 +232,12 @@ VALUES
 	(15, 15, 5);
 
 -- Orders
-INSERT INTO Orders(OrderID, CustomerID, OrderDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
 VALUES
-	(1, 1, '2023-01-08 11:36:14.840', NULL, 2, 'awaiting payment', 1),
-	(2, 2, '2023-01-06 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3),
-	(3, 3, '2023-01-07 11:36:14.840', '2023-01-07 11:38:14.840', 2, 'in preparation', 1),
-	(4, 4, '2023-01-06 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1);
+	(1, 1, '2023-01-08 11:36:14.840', NULL, NULL, 2, 'awaiting payment', 1),
+	(2, 2, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3),
+	(3, 3, '2023-01-07 11:36:14.840', NULL, '2023-01-07 11:38:14.840', 2, 'in preparation', 1),
+	(4, 4, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1);
 
 -- OrderDetails
 INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
