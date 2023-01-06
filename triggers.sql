@@ -59,14 +59,14 @@ BEGIN
 		BEGIN
 			IF DATEDIFF(day, @OrderDate, @CollectDate) < 3 + (@CollectDateWeekday - 5)
 				BEGIN
-					PRINT ('Orders containg Seafood can only be placed until the first Monday before the collect date.')
+					PRINT ('Adding product to order failed. Orders containg Seafood can only be placed until the first Monday before the collect date.')
 					DELETE FROM OrderDetails WHERE OrderID = @InsertedOrderID
 					AND ProductID = @InsertedProductID
 					AND Quantity = @InsertedProductQuantity
 				END
 			IF @CollectDateWeekday NOT IN (5, 6, 7)
 				BEGIN
-					PRINT ('Orders containg Seafood can only be collected on Thursdays, Fridays and Saturdays')
+					PRINT ('Adding product to order failed. Orders containg Seafood can only be collected on Thursdays, Fridays and Saturdays')
 					DELETE FROM OrderDetails WHERE OrderID = @InsertedOrderID
 					AND ProductID = @InsertedProductID
 					AND Quantity = @InsertedProductQuantity
