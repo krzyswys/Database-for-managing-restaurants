@@ -148,3 +148,104 @@ VALUES
 	(2, '2022-05-05 11:36:14.840', NULL, 6000),
 	(3, '2022-12-15 11:36:14.840', NULL, 4200),
 	(4, '2022-08-08 11:36:14.840', NULL, 3500);
+
+-- PaymentMethod
+INSERT INTO PaymentMethod (PaymentID, PaymentName)
+VALUES
+	(1, 'cash'),
+	(2, 'card'),
+	(3, 'blik'),
+	(4, 'bank transfer'),
+	(5, 'PayPal');
+
+-- Customers
+INSERT INTO Customers (CustomerID, Street, Country, City, PostCode, Phone, Email)
+VALUES
+	-- Individual
+	(1, 'Kawiory 15', 'Poland', 'Kraków', '30-070', '123123123', 'jan_magiera@mail.com'),
+	(2, 'Czarnowiejska 119', 'Poland', 'Kraków', '30-072', '999999999', 'maja_kowal@mail.com'),
+	(3, 'Reymonta 1', 'Poland', 'Kraków', '30-071', '333333333', 'adrian_nowak@mail.com'),
+	(4, 'Złota 44', 'Poland', 'Kraków', '38-073', '112112112', 'julia_kowalska@mail.com'),
+	(5, 'Czarna 9', 'Poland', 'Kraków', '38-072', '555555555', 'wiktor_bialy@mail.com'),
+	
+	-- Bussiness
+	(6, 'Kawiory 15', 'Poland', 'Kraków', '30-070', '123123123', 'bussiness1@mail.com'),
+	(7, 'Czarnowiejska 119', 'Poland', 'Kraków', '30-072', '999999999', 'bussiness2@mail.com'),
+	(8, 'Reymonta 1', 'Poland', 'Kraków', '30-071', '333333333', 'bussiness3@mail.com'),
+	(9, 'Złota 44', 'Poland', 'Kraków', '38-073', '112112112', 'bussiness4@mail.com'),
+	(10, 'Czarna 9', 'Poland', 'Kraków', '38-072', '555555555', 'bussiness5@mail.com');
+
+-- CustomersPersonalData
+INSERT INTO CustomersPersonalData (PersonID, FirstName, LastName)
+VALUES 
+	(1, 'Jan', 'Magiera'),
+	(2, 'Maja', 'Kowal'),
+	(3, 'Adrian', 'Nowak'),
+	(4, 'Julia', 'Kowalska'),
+	(5, 'Wiktor', 'Bialy'),
+	(6, 'Jan', 'Nowak'),
+	(7, 'Kamil', 'Kowalski'),
+	(8, 'Dominika', 'Zawisza'),
+	(9, 'Kamila', 'Dąb'),
+	(10, 'Michał', 'Baron'),
+	(11, 'Magdalena', 'Konieczna'),
+	(12, 'Bartosz', 'Kolanko'),
+	(13, 'Julian', 'Adamski'),
+	(14, 'Karolina', 'Klara'),
+	(15, 'Stanisław', 'Seweryn')
+
+-- CustomersPersonalData
+INSERT INTO IndividualCustomers(CustomerID, PersonID)
+VALUES
+	(1, 1),
+	(2, 2),
+	(3, 3),
+	(4, 4),
+	(5, 5);
+
+-- Companies
+INSERT INTO Companies(CompanyID, CustomerID, CompanyName, NIP)
+VALUES
+	(1, 6, 'Bussiness1', '1111111111'),
+	(2, 7, 'Bussiness2', '2222222222'),
+	(3, 8, 'Bussiness3', '3333333333'),
+	(4, 9, 'Bussiness4', '4444444444'),
+	(5, 10, 'Bussiness5', '5555555555');
+
+-- CompanyEmployees
+INSERT INTO CompanyEmployees(CompanyEmployeeID, PersonID, CompanyID)
+VALUES
+	(1, 1, 1),
+	(2, 2, 1),
+	(3, 3, 1),
+	(4, 4, 2),
+	(5, 5, 2),
+	(6, 6, 2),
+	(7, 7, 2),
+	(8, 8, 3),
+	(9, 9, 3),
+	(10, 10, 4),
+	(11, 11, 4),
+	(12, 12, 4),
+	(13, 13, 5),
+	(14, 14, 5),
+	(15, 15, 5);
+
+-- Orders
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(1, 1, '2023-01-08 11:36:14.840', NULL, 2, 'awaiting payment', 1),
+	(2, 2, '2023-01-06 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3),
+	(3, 3, '2023-01-07 11:36:14.840', '2023-01-07 11:38:14.840', 2, 'in preparation', 1),
+	(4, 4, '2023-01-06 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1);
+
+-- OrderDetails
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	-- OrderID: 1
+	(1, 1, 2),
+	(1, 4, 1),
+	-- OrderID: 2
+	(2, 2, 1),
+	(2, 5, 1),
+	(2, 9, 1);
