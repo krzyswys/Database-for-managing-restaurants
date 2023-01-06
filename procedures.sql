@@ -650,3 +650,70 @@ BEGIN
 END
 go
 
+
+
+-- dodawanie klienta
+CREATE PROCEDURE AddCustomerProcedure 
+@Street varchar(64), 
+@Country varchar(64), 
+@City varchar(64), 
+@PostCode varchar(16), 
+@Phone varchar(16),
+@Email varchar(64)
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM Customers
+            WHERE Street = @Street AND Country = @Country AND City=@City AND PostCode = @PostCode AND Phone = @Phone AND Email=@Email
+        )
+        BEGIN
+            ;
+            THROW 52000, 'Klient jest już w bazie', 1
+        END
+    
+    DECLARE @CustomerID INT
+    SELECT @CustomerID = ISNULL(MAX(CustomerID), 0) + 1
+    FROM Customers
+    INSERT INTO Customers(CustomerID,Street, Country, City, PostCode, Phone, Email)
+    VALUES (@CustomerID, @Street, @Country, @City, @PostCode, @Phone, @Email);
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Błąd dodawania klienta: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
+-- usunięcie pracownika
+CREATE PROCEDURE RemoveCustomerProcedure 
+@CustomerID INT
+
+AS
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRY
+        IF EXISTS(
+            SELECT *
+            FROM Customers
+            WHERE CustomerID = @CustomerID
+        )
+        BEGIN
+        ;
+        DELETE FROM Customers 
+		WHERE  @CustomerID = CustomerID 
+        END
+    END TRY
+    BEGIN CATCH
+        DECLARE @errormsg nvarchar(2048) =
+                    'Błąd usuwania klienta: ' + ERROR_MESSAGE();
+        THROW 52000, @errormsg, 1;
+    END CATCH
+END
+go
+
