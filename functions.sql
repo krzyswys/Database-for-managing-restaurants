@@ -71,14 +71,17 @@ go
 
 -- wartosc X zamówienia
 CREATE FUNCTION GetValueOfOrder(@input int)
-    RETURNS table AS
-        RETURN
-        SELECT  OrderDetails.Quantity*ProductPrices.UnitPrice as cena
+    RETURNS int AS
+	BEGIN
+	DECLARE @value INT;
+        SELECT   @value = OrderDetails.Quantity*ProductPrices.UnitPrice 
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         WHERE Orders.OrderID = @input
+	RETURN IsNull(@value, 0);
+	END
 go
 
 -- wartosc najtańszy produkt w kategorii
