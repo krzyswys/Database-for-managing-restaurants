@@ -88,7 +88,7 @@ GO
 --Report_Of_Total_Orders_Products_Price_View
 CREATE VIEW Total_Orders_Products_Prices_Report_View AS
 
-SELECT 
+SELECT TOP 1
 (SELECT COUNT(OrderID) FROM Orders
 WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
 AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of orders for the last month],
