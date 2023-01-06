@@ -193,5 +193,32 @@ RETURN
 	SELECT DATEDIFF(day, GETDATE(), (SELECT 
 		ToTime 
 		FROM Menu 
-		WHERE MenuID = MenuID ))
+		WHERE MenuID = @MenuID )) as [remaining days]
 GO
+
+
+CREATE FUNCTION RemainingFreeSeats()
+RETURNS table
+AS 
+RETURN 
+	SELECT (
+	(SELECT 
+	SUM(NumberOfSeats) 
+	FROM DiningTables) - 
+	
+	(SELECT 
+	SUM(Seats)
+	FROM Reservation 
+	WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime
+	)) as [free seats]
+GO
+
+CREATE FUNCTION CanAccommodateCustomers(@customers int)
+RETURNS table
+AS
+RETURN
+	SELECT  (CASE WHEN free_seats.nrOfFreeSeats >= @customers THEN 'true' ELSE 'false' END) AS freeSpaces
+	FROM (SELECT ((SELECT SUM(NumberOfSeats) FROM DiningTables) - (SELECT SUM(Seats) FROM Reservation WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime)) as nrOfFreeSeats
+	) as free_seats 
+GO
+	
