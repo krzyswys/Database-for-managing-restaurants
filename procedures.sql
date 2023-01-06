@@ -150,7 +150,7 @@ BEGIN
         DECLARE @DinigTableID INT
         SELECT @DinigTableID = ISNULL(MAX(DiningTables.DiningTableID), 0) + 1
         FROM DiningTables
-        INSERT INTO DiningTables(DiningTables.DiningTableID, NumberOfSeats)
+        INSERT INTO DiningTables(DiningTableID, NumberOfSeats)
         VALUES(@DinigTableID, @capacity);
     END TRY
     BEGIN CATCH
