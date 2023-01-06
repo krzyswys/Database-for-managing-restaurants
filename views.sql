@@ -41,7 +41,7 @@ GO
 CREATE VIEW Not_Paid_Orders_View AS
 SELECT CustomerID, RestaurantEmployeeID, OrderID
 FROM Orders
-WHERE OrderStatus like '%not_paid%'
+WHERE OrderStatus like 'awaiting payment'
 GO
 
 --Today_Reservations_View
