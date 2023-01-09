@@ -234,7 +234,7 @@ CREATE VIEW OrderStatisticsView
 AS
 SELECT 
 (SELECT COUNT(*) FROM Orders) as [całkowita liczba zamówień],
-(SELECT SUM(ProductPrices.UnitPrice*Quantity*(1- (DiscountPercent/100))) FROM Orders 
+(SELECT SUM(ProductPrices.UnitPrice*Quantity*(1- (DiscountPercent/100.0))) FROM Orders 
 INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON OrderDetails.ProductID =  Products.ProductID
 INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
