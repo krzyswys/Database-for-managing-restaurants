@@ -158,28 +158,32 @@ BEGIN
 			                  FROM Customers
 				          JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
                           JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID AND (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
+                          WHERE Orders.CustomerID = @InsertedCustomerID AND ( [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
 
                           
 
 	DECLARE @ThisOrderCustomerNumberValueOfOrders int
-	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(t.val) FROM (SELECT (  SELECT * FROM  [dbo].GetValueOfOrder(Orders.OrderID)    ) as val, Customers.CustomerID --       (@InsertedOrderID)) --sumuje wszystkie zamówienia danego klienta
+	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(   [dbo].GetValueOfOrder(Orders.OrderID))  --sumuje wszystkie zamówienia danego klienta
 			                  FROM Customers
 				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
                           INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID) as t)
+                          WHERE Orders.CustomerID = @InsertedCustomerID) 
 
 
 	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderZ1
 		BEGIN
 	    			PRINT ('Qualified for first discount')
-					--przypisanie zniżki @ThisOrderR1
+					UPDATE TempDiscount 
+					SET DiscountPercent = @ThisOrderR1, ToTime = NULL, FromTime = GETDATE()
+					WHERE CustomerID = @InsertedOrderID
 		END
 
     IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderK2
         BEGIN
 	    			PRINT ('Qualified for second discount')
-					--przypisanie zniżki @ThisOrderR1 @ThisOrderD1
+					UPDATE TempDiscount 
+					SET DiscountPercent = @ThisOrderR1, ToTime = DATEADD(day,@ThisOrderD1, GETDATE()), FromTime = GETDATE()
+					WHERE CustomerID = @InsertedOrderID
 		END
 END
 GO
@@ -220,7 +224,7 @@ DECLARE @InsertedReservationID int
                           WHERE Orders.CustomerID = @InsertedCustomerID) 
 
 	DECLARE @ThisOrderCustomerNumberValueOfOrders int
-	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
+	SET @ThisOrderCustomerNumberValueOfOrders = (dbo.GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
 			                  )
 
     DECLARE @flag int
