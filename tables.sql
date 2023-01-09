@@ -220,7 +220,7 @@ CREATE TABLE TempDiscount
     FromTime         datetime   NOT NULL,
     ToTime           datetime   NULL DEFAULT NULL,
     DiscountPercent  int        NOT NULL DEFAULT 0,
-    CONSTRAINT Proper_Dates_VariablesData_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
+    CONSTRAINT Proper_Dates_TempDiscount_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT TempDiscount_DiscountPercent_c CHECK (TempDiscount.DiscountPercent >= 0)
 );
 
