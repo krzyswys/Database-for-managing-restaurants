@@ -328,7 +328,7 @@ ALTER TABLE Orders
     ADD CONSTRAINT Orders_PaymentMethod
         FOREIGN KEY (PayVia)
             REFERENCES PaymentMethod (PaymentID);
-GO        
+GO
             
 -- VIEWS --
 CREATE VIEW Current_Menu_View AS
@@ -393,6 +393,13 @@ SELECT CustomerID, RestaurantEmployeeID, OrderID
 FROM Orders
 WHERE OrderStatus like '%not_confirmed%'
 GO
+
+--Takaway_Orders_Pending_For_Pickup_View
+--CREATE VIEW Takaway_Orders_Pending_For_Pickup_View AS
+--SELECT CustomerID, RestaurantEmployeeID, OrderID
+--FROM Orders
+--WHERE Takeaway. is NULL --?TODO: create a takeaway_status?
+--GO
 
 --Order_Details_View
 CREATE VIEW Order_Details_View
@@ -565,14 +572,17 @@ go
 
 -- wartosc X zamówienia
 CREATE FUNCTION GetValueOfOrder(@input int)
-    RETURNS table AS
-        RETURN
-        SELECT  OrderDetails.Quantity*ProductPrices.UnitPrice as cena
+    RETURNS int AS
+	BEGIN
+	DECLARE @value INT;
+        SELECT   @value = OrderDetails.Quantity*ProductPrices.UnitPrice 
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
         WHERE Orders.OrderID = @input
+	RETURN IsNull(@value, 0);
+	END
 go
 
 -- wartosc najtańszy produkt w kategorii
@@ -677,6 +687,43 @@ RETURN
    SELECT MAX(Salary) AS MaxEmployeeSalary
    FROM EmployeesSalary
    WHERE RestaurantEmployeeID = @EmployeeID
+GO
+
+--Sprawdzenie ile dni pozostało na dane menu - pracownik
+CREATE FUNCTION RemainingDaysForMenu(@MenuID int)
+RETURNS table
+AS
+RETURN 
+	SELECT DATEDIFF(day, GETDATE(), (SELECT 
+		ToTime 
+		FROM Menu 
+		WHERE MenuID = @MenuID )) as [remaining days]
+GO
+
+
+CREATE FUNCTION RemainingFreeSeats()
+RETURNS table
+AS 
+RETURN 
+	SELECT (
+	(SELECT 
+	SUM(NumberOfSeats) 
+	FROM DiningTables) - 
+	
+	(SELECT 
+	SUM(Seats)
+	FROM Reservation 
+	WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime
+	)) as [free seats]
+GO
+
+CREATE FUNCTION CanAccommodateCustomers(@customers int)
+RETURNS table
+AS
+RETURN
+	SELECT  (CASE WHEN free_seats.nrOfFreeSeats >= @customers THEN 'true' ELSE 'false' END) AS freeSpaces
+	FROM (SELECT ((SELECT SUM(NumberOfSeats) FROM DiningTables) - (SELECT SUM(Seats) FROM Reservation WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime)) as nrOfFreeSeats
+	) as free_seats 
 GO
 
 
@@ -1529,7 +1576,6 @@ go
 
 
 -- TRIGGERS --
--- AddMenuOneDayInAdvanceTrigger
 CREATE TRIGGER AddMenuOneDayInAdvanceTrigger
 	ON Menu
 	AFTER INSERT AS
@@ -1602,6 +1648,344 @@ BEGIN
 					AND ProductID = @InsertedProductID
 					AND Quantity = @InsertedProductQuantity
 				END
+		END
+END
+GO
+
+
+-- CheckReservationSeatsTrigger
+CREATE TRIGGER CheckReservationSeatsTrigger
+	ON Reservation
+	AFTER INSERT AS
+BEGIN
+	DECLARE @InsertedReservationID int
+	SET @InsertedReservationID = (SELECT ReservationID
+			       FROM INSERTED)
+	DECLARE @InsertedSeats int
+	SET @InsertedSeats = (SELECT Seats
+			     FROM Reservation
+			     WHERE ReservationID = @InsertedReservationID)
+	IF  @InsertedSeats < 2
+		BEGIN
+			PRINT ('Adding new reservation failed. Reservation must be inserted with at least two seats')
+			DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
+		END
+END
+GO
+
+-- CheckReservationCapacityTrigger
+CREATE TRIGGER CheckReservationCapacityTrigger
+	ON Reservation
+	AFTER INSERT AS
+BEGIN
+	DECLARE @InsertedReservationID int
+	SET @InsertedReservationID = (SELECT ReservationID
+			       FROM INSERTED)
+	DECLARE @InsertedSeats int
+	SET @InsertedSeats = (SELECT Seats
+			     FROM Reservation
+			     WHERE ReservationID = @InsertedReservationID)
+	IF  @InsertedSeats > (SELECT DiningTables.NumberOfSeats FROM Reservation INNER JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID WHERE @InsertedReservationID = ReservationID)
+		BEGIN
+			PRINT ('Adding new reservation failed. Reservation must be inserted with less or equal number of availabile seats')
+			DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
+		END
+END
+GO
+
+-- CheckDiscountAvailabilityTrigger
+CREATE TRIGGER CheckDiscountAvailabilityTrigger
+ON Reservation
+AFTER INSERT AS
+BEGIN
+	DECLARE @InsertedOrderID int
+	SET @InsertedOrderID = (SELECT OrderID
+			        FROM INSERTED)
+
+	DECLARE @InsertedCustomerID int
+	SET @InsertedCustomerID = (SELECT Orders.CustomerID
+			          FROM INSERTED
+					  INNER JOIN Orders ON Orders.OrderID = INSERTED.OrderID)
+                      ------------------------------------------------
+
+    DECLARE @ThisOrderZ1 int
+	SET @ThisOrderZ1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='Z1' AND toTime = NULL)
+
+    DECLARE @ThisOrderK1 int
+	SET @ThisOrderK1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='K1' AND toTime = NULL)
+    DECLARE @ThisOrderR1 int
+	SET @ThisOrderR1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='R1' AND toTime = NULL)
+                            ---------------------------------
+    DECLARE @ThisOrderK2 int
+	SET @ThisOrderK2 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='K2' AND toTime = NULL)   
+    DECLARE @ThisOrderR2 int
+	SET @ThisOrderR2 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='R2' AND toTime = NULL)
+    DECLARE @ThisOrderD1 int
+	SET @ThisOrderD1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='D1' AND toTime = NULL)
+    -----------------------------------               --------------------------------------                                  
+
+	DECLARE @ThisOrderCustomerNumberOfOrders int
+	SET @ThisOrderCustomerNumberOfOrders =(SELECT COUNT(Orders.OrderID) --liczy wszystkie zamówienia danego klienta >K1
+			                  FROM Customers
+				          JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+                          JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+                          WHERE Orders.CustomerID = @InsertedCustomerID AND (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
+
+                          
+
+	DECLARE @ThisOrderCustomerNumberValueOfOrders int
+	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(t.val) FROM (SELECT (  SELECT * FROM  [dbo].GetValueOfOrder(Orders.OrderID)    ) as val, Customers.CustomerID --       (@InsertedOrderID)) --sumuje wszystkie zamówienia danego klienta
+			                  FROM Customers
+				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+                          INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+                          WHERE Orders.CustomerID = @InsertedCustomerID) as t)
+
+
+	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderZ1
+		BEGIN
+	    			PRINT ('Qualified for first discount')
+					--przypisanie zniżki @ThisOrderR1
+		END
+
+    IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderK2
+        BEGIN
+	    			PRINT ('Qualified for second discount')
+					--przypisanie zniżki @ThisOrderR1 @ThisOrderD1
+		END
+END
+GO
+
+
+-- CheckIndividualReservationAvailabilityTrigger
+CREATE TRIGGER CheckIndividualReservationAvailabilityTrigger
+ON Reservation
+AFTER INSERT AS
+BEGIN
+DECLARE @InsertedReservationID int
+	SET @InsertedReservationID = (SELECT ReservationID
+			       FROM INSERTED)
+	DECLARE @InsertedOrderID int
+	SET @InsertedOrderID = (SELECT OrderID
+			        FROM INSERTED)
+
+	DECLARE @InsertedCustomerID int
+	SET @InsertedCustomerID = (SELECT Orders.CustomerID
+			          FROM INSERTED
+                        INNER JOIN Orders ON Orders.OrderID = INSERTED.OrderID
+					  )
+
+    DECLARE @ThisOrderWK int
+	SET @ThisOrderWK = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='WK' AND toTime = NULL)
+
+    DECLARE @ThisOrderWZ int
+	SET @ThisOrderWZ = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='WZ' AND toTime = NULL)
+                                
+
+	DECLARE @ThisOrderCustomerNumberOfOrders int
+	SET @ThisOrderCustomerNumberOfOrders =(SELECT COUNT(Orders.OrderID) --liczy wszystkie zamówienia danego klienta 
+			                  FROM Customers
+				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+                          INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+                          WHERE Orders.CustomerID = @InsertedCustomerID) 
+
+	DECLARE @ThisOrderCustomerNumberValueOfOrders int
+	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
+			                  )
+
+    DECLARE @flag int
+    SET @flag =0
+	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderWK
+		BEGIN
+	    			PRINT ('Qualified for reservation')
+                    SET @flag =1
+		END
+
+    IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderWZ AND @flag=0
+        BEGIN
+	    			PRINT ('Qualified for reservation')
+                    SET @flag =1
+		END
+    IF  @flag=0
+        BEGIN
+	    			PRINT ('Not qualified for reservation')
+                    DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
+		END
+END
+GO
+
+-- CheckReservationSeatsTrigger
+CREATE TRIGGER CheckReservationSeatsTrigger
+	ON Reservation
+	AFTER INSERT AS
+BEGIN
+	DECLARE @InsertedReservationID int
+	SET @InsertedReservationID = (SELECT ReservationID
+			       FROM INSERTED)
+	DECLARE @InsertedSeats int
+	SET @InsertedSeats = (SELECT Seats
+			     FROM Reservation
+			     WHERE ReservationID = @InsertedReservationID)
+	IF  @InsertedSeats < 2
+		BEGIN
+			PRINT ('Adding new reservation failed. Reservation must be inserted with at least two seats')
+			DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
+		END
+END
+GO
+
+-- CheckReservationCapacityTrigger
+CREATE TRIGGER CheckReservationCapacityTrigger
+	ON Reservation
+	AFTER INSERT AS
+BEGIN
+	DECLARE @InsertedReservationID int
+	SET @InsertedReservationID = (SELECT ReservationID
+			       FROM INSERTED)
+	DECLARE @InsertedSeats int
+	SET @InsertedSeats = (SELECT Seats
+			     FROM Reservation
+			     WHERE ReservationID = @InsertedReservationID)
+	IF  @InsertedSeats > (SELECT DiningTables.NumberOfSeats FROM Reservation INNER JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID WHERE @InsertedReservationID = ReservationID)
+		BEGIN
+			PRINT ('Adding new reservation failed. Reservation must be inserted with less or equal number of availabile seats')
+			DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
+		END
+END
+GO
+
+-- CheckDiscountAvailabilityTrigger
+CREATE TRIGGER CheckDiscountAvailabilityTrigger
+ON Reservation
+
+AFTER INSERT AS
+BEGIN
+	DECLARE @InsertedOrderID int
+	SET @InsertedOrderID = (SELECT OrderID
+			        FROM INSERTED)
+
+	DECLARE @InsertedCustomerID int
+	SET @InsertedCustomerID = (SELECT Orders.CustomerID
+			          FROM INSERTED
+					  INNER JOIN Orders ON Orders.OrderID = INSERTED.OrderID)
+                      ------------------------------------------------
+
+    DECLARE @ThisOrderZ1 int
+	SET @ThisOrderZ1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='Z1' AND toTime = NULL)
+
+    DECLARE @ThisOrderK1 int
+	SET @ThisOrderK1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='K1' AND toTime = NULL)
+    DECLARE @ThisOrderR1 int
+	SET @ThisOrderR1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='R1' AND toTime = NULL)
+                            ---------------------------------
+    DECLARE @ThisOrderK2 int
+	SET @ThisOrderK2 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='K2' AND toTime = NULL)   
+    DECLARE @ThisOrderR2 int
+	SET @ThisOrderR2 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='R2' AND toTime = NULL)
+    DECLARE @ThisOrderD1 int
+	SET @ThisOrderD1 = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='D1' AND toTime = NULL)
+    -----------------------------------               --------------------------------------                                  
+
+	DECLARE @ThisOrderCustomerNumberOfOrders int
+	SET @ThisOrderCustomerNumberOfOrders =(SELECT COUNT(Orders.OrderID) --liczy wszystkie zamówienia danego klienta >K1
+			                  FROM Customers
+				          JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+                          JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+                          WHERE Orders.CustomerID = @InsertedCustomerID AND (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
+
+
+
+	DECLARE @ThisOrderCustomerNumberValueOfOrders int
+	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(t.val) FROM (SELECT (  SELECT * FROM  [dbo].GetValueOfOrder(Orders.OrderID)    ) as val, Customers.CustomerID --       (@InsertedOrderID)) --sumuje wszystkie zamówienia danego klienta
+			                  FROM Customers
+				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+                          INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+                          WHERE Orders.CustomerID = @InsertedCustomerID) as t)
+
+
+	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderZ1
+		BEGIN
+	    			PRINT ('Qualified for first discount')
+					--przypisanie zniżki @ThisOrderR1
+		END
+
+    IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderK2
+        BEGIN
+	    			PRINT ('Qualified for second discount')
+					--przypisanie zniżki @ThisOrderR1 @ThisOrderD1
+		END
+END
+GO
+
+
+-- CheckIndividualReservationAvailabilityTrigger
+CREATE TRIGGER CheckIndividualReservationAvailabilityTrigger
+ON Reservation
+AFTER INSERT AS
+BEGIN
+DECLARE @InsertedReservationID int
+	SET @InsertedReservationID = (SELECT ReservationID
+			       FROM INSERTED)
+	DECLARE @InsertedOrderID int
+	SET @InsertedOrderID = (SELECT OrderID
+			        FROM INSERTED)
+
+	DECLARE @InsertedCustomerID int
+	SET @InsertedCustomerID = (SELECT Orders.CustomerID
+			          FROM INSERTED
+                        INNER JOIN Orders ON Orders.OrderID = INSERTED.OrderID
+					  )
+
+    DECLARE @ThisOrderWK int
+	SET @ThisOrderWK = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='WK' AND toTime = NULL)
+
+    DECLARE @ThisOrderWZ int
+	SET @ThisOrderWZ = (SELECT VariableValue
+			                FROM VariablesData WHERE VariableType='WZ' AND toTime = NULL)
+
+
+	DECLARE @ThisOrderCustomerNumberOfOrders int
+	SET @ThisOrderCustomerNumberOfOrders =(SELECT COUNT(Orders.OrderID) --liczy wszystkie zamówienia danego klienta 
+			                  FROM Customers
+				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+                          INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+                          WHERE Orders.CustomerID = @InsertedCustomerID) 
+
+	DECLARE @ThisOrderCustomerNumberValueOfOrders int
+	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
+			                  )
+
+    DECLARE @flag int
+    SET @flag =0
+	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderWK
+		BEGIN
+	    			PRINT ('Qualified for reservation')
+                    SET @flag =1
+		END
+
+    IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderWZ AND @flag=0
+        BEGIN
+	    			PRINT ('Qualified for reservation')
+                    SET @flag =1
+		END
+    IF  @flag=0
+        BEGIN
+	    			PRINT ('Not qualified for reservation')
+                    DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
 		END
 END
 GO
