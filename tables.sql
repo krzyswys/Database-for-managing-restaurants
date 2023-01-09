@@ -214,6 +214,16 @@ CREATE TABLE VariablesData
     CONSTRAINT VariableValue_VariablesData_c CHECK (VariablesData.VariableValue >= 0)
 );
 
+CREATE TABLE TempDiscount
+(
+    CustomerID       int        NOT NULL,
+    FromTime         datetime   NOT NULL,
+    ToTime           datetime   NULL DEFAULT NULL,
+    DiscountPercent  int        NOT NULL DEFAULT 0,
+    CONSTRAINT Proper_Dates_VariablesData_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
+    CONSTRAINT TempDiscount_DiscountPercent_c CHECK (TempDiscount.DiscountPercent >= 0)
+);
+
 -- Foreign Keys
 ALTER TABLE Products
     ADD CONSTRAINT Categories_Products
@@ -329,3 +339,8 @@ ALTER TABLE Orders
     ADD CONSTRAINT Orders_PaymentMethod
         FOREIGN KEY (PayVia)
             REFERENCES PaymentMethod (PaymentID);
+            
+ ALTER TABLE TempDiscount
+    ADD CONSTRAINT TempDiscount_Customers
+        FOREIGN KEY (CustomerID)
+            REFERENCES Customers (CustomerID);
