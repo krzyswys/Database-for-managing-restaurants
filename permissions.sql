@@ -40,6 +40,7 @@ GRANT SELECT ON Total_Orders_Products_Prices_Report_View  to
 GRANT SELECT ON Total_Products_Sales_View  to
 GRANT SELECT ON Total_Categories_Sales_View  to
 GRANT SELECT ON Available_s_View  to
+GRANT SELECT ON Total_Reservation_Report_for_Customers_View to
 
 GRANT EXECUTE ON GetDetailsOfOrder to
 GRANT EXECUTE ON GetStateOfOrder to
