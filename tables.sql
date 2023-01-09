@@ -103,6 +103,7 @@ CREATE TABLE Orders
     PayVia               int    NULL,
     OrderStatus          varchar(64) NOT NULL,
     RestaurantEmployeeID int    NOT NULL,
+    DiscountPercent      int    NOT NULL DEFAULT 0,
     CONSTRAINT Orders_pk PRIMARY KEY (OrderID)
 );
 
