@@ -251,3 +251,4 @@ INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
 (SELECT COUNT(*) FROM Orders WHERE PaymentDate = NULL) as [ilość zamówień nieopłaconych],
 (SELECT COUNT(*) FROM Orders WHERE CollectDate = NULL) as [ilość zamówień nieodebranych],
 (SELECT TOP 1 OrderDate FROM Orders ORDER BY OrderDate DESC) as [data ostatnio zrealizowanego zamówienia]
+GO
