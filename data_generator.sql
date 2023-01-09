@@ -238,16 +238,16 @@ VALUES
 INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID, DiscountPercent)
 VALUES
 	(1, 1, '2023-01-08 11:36:14.840', NULL, NULL, 2, 'awaiting payment', 1, 3);
-INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID, DiscountPercent)
 VALUES
 	(2, 2, '2023-01-06 11:36:14.840', '2023-01-20 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3, 0);
-INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID, DiscountPercent)
 VALUES
 	(3, 7, '2023-01-07 11:36:14.840', NULL, '2023-01-07 11:38:14.840', 2, 'in preparation', 1, 5);
-INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID, DiscountPercent)
 VALUES
 	(4, 6, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1, 2);
-INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID, DiscountPercent)
 VALUES
 	(5, 1, '2023-01-06 11:36:14.840', NULL, '2023-01-06 11:38:14.840', 2, 'waiting for pickup', 1, 0);
 
