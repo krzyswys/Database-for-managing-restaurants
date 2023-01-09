@@ -196,3 +196,22 @@ INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
 ) as [ilosc dokonanych rezerwacji na firmę w tym tygodniu]
 GO
+
+-- CurrentMenuSalesStatsView
+CREATE VIEW CurrentMenuSalesStatsView
+AS
+SELECT Products.ProductName, COUNT(Products.ProductName) AS Total
+FROM Products
+LEFT JOIN OrderDetails ON OrderDetails.ProductID = Products.ProductID
+LEFT JOIN  Orders ON Orders.OrderID = OrderDetails.ProductID
+WHERE (OrderDate > (SELECT FromTime
+		    FROM Menu
+		    WHERE ToTime IS NULL)
+OR OrderDate IS NULL)
+AND Products.ProductID IN (SELECT ProductID
+			   FROM MenuDetails
+			   WHERE MenuID = (SELECT MenuID
+					   FROM Menu
+					   WHERE ToTime IS NULL))
+GROUP BY Products.ProductName 
+GO
