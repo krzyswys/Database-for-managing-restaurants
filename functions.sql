@@ -70,7 +70,7 @@ CREATE FUNCTION GetValueOfOrdersOnMonth(@date date)
 go
 
 -- wartosc X zamówienia
-CREATE FUNCTION GetValueOfOrder(@input int)
+ALTER FUNCTION GetValueOfOrder(@input int)
     RETURNS int AS
 	BEGIN
 	DECLARE @value INT;
@@ -79,7 +79,7 @@ CREATE FUNCTION GetValueOfOrder(@input int)
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
-        WHERE Orders.OrderID = @input
+        WHERE (Orders.OrderID = @input) AND (Orders.OrderDate >= ProductPrices.FromTime AND ( ProductPrices.ToTime is NULL OR ProductPrices.ToTime>=Orders.OrderDate))
 	RETURN IsNull(@value, 0);
 	END
 go
