@@ -209,11 +209,11 @@ DECLARE @InsertedReservationID int
 
     DECLARE @ThisOrderWK int
 	SET @ThisOrderWK = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='WK' AND toTime = NULL)
+			                FROM VariablesData WHERE VariableType='WK' AND toTime IS NULL)
 
     DECLARE @ThisOrderWZ int
 	SET @ThisOrderWZ = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='WZ' AND toTime = NULL)
+			                FROM VariablesData WHERE VariableType='WZ' AND toTime IS NULL)
                                 
 
 	DECLARE @ThisOrderCustomerNumberOfOrders int
