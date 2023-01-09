@@ -103,6 +103,7 @@ CREATE TABLE Orders
     PayVia               int    NULL,
     OrderStatus          varchar(64) NOT NULL,
     RestaurantEmployeeID int    NOT NULL,
+    DiscountPercent      int    NOT NULL DEFAULT 0,
     CONSTRAINT Orders_pk PRIMARY KEY (OrderID)
 );
 
@@ -211,6 +212,16 @@ CREATE TABLE VariablesData
     VariableValue int        NOT NULL,
     CONSTRAINT Proper_Dates_VariablesData_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
     CONSTRAINT VariableValue_VariablesData_c CHECK (VariablesData.VariableValue >= 0)
+);
+
+CREATE TABLE TempDiscount
+(
+    CustomerID       int        NOT NULL,
+    FromTime         datetime   NOT NULL,
+    ToTime           datetime   NULL DEFAULT NULL,
+    DiscountPercent  int        NOT NULL DEFAULT 0,
+    CONSTRAINT Proper_Dates_TempDiscount_c CHECK (FromTime <= ToTime OR ToTime IS NULL),
+    CONSTRAINT TempDiscount_DiscountPercent_c CHECK (TempDiscount.DiscountPercent >= 0)
 );
 
 -- Foreign Keys
@@ -328,8 +339,14 @@ ALTER TABLE Orders
     ADD CONSTRAINT Orders_PaymentMethod
         FOREIGN KEY (PayVia)
             REFERENCES PaymentMethod (PaymentID);
-GO
             
+ ALTER TABLE TempDiscount
+    ADD CONSTRAINT TempDiscount_Customers
+        FOREIGN KEY (CustomerID)
+            REFERENCES Customers (CustomerID);
+GO
+
+
 -- VIEWS --
 CREATE VIEW Current_Menu_View AS
 SELECT Products.ProductID ,Products.ProductName, ProductPrices.UnitPrice
@@ -437,7 +454,7 @@ AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of sold products 
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
 AS [total number of sold products for the last week],
 
-(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as calkowitaSuma
+(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as calkowitaSuma
 FROM Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID 
 INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
@@ -446,7 +463,7 @@ AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
 AND Orders.OrderDate >= ProductPrices.FromTime AND (ProductPrices.ToTime is NULL OR ProductPrices.ToTime >= Orders.OrderDate)
 GROUP BY Orders.OrderID) AS table2 ) AS [total order price for the last month],
 
-(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as calkowitaSuma
+(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as calkowitaSuma
 FROM Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID 
 INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
@@ -498,12 +515,101 @@ WHERE ToTime < GETDATE()
 GO
 
 
+--Total_Reservation_Report_for_Customers_View
+CREATE VIEW Total_Reservation_Report_for_Customers_View AS
+SELECT 
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilość dokonanych rezerwacji prywatnie w tym miesiącu],
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilosc dokonanych rezerwacji prywatnie w tym tygodniu],
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
+WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilosc dokonanych rezerwacji na firmę w tym miesiacu],
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
+WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilosc dokonanych rezerwacji na firmę w tym tygodniu]
+GO
+
+-- CurrentMenuSalesStatsView
+CREATE VIEW CurrentMenuSalesStatsView
+AS
+SELECT Products.ProductName, COUNT(Products.ProductName) AS Total
+FROM Products
+LEFT JOIN OrderDetails ON OrderDetails.ProductID = Products.ProductID
+LEFT JOIN  Orders ON Orders.OrderID = OrderDetails.ProductID
+WHERE (OrderDate > (SELECT FromTime
+		    FROM Menu
+		    WHERE ToTime IS NULL)
+OR OrderDate IS NULL)
+AND Products.ProductID IN (SELECT ProductID
+			   FROM MenuDetails
+			   WHERE MenuID = (SELECT MenuID
+					   FROM Menu
+					   WHERE ToTime IS NULL))
+GROUP BY Products.ProductName 
+GO
+
+-- TotalCustomersDiscountsView
+CREATE VIEW TotalCustomersDiscountsView
+AS
+SELECT Customers.CustomerID, SUM(ISNULL((DiscountPercent / 100.0) * (UnitPrice * Quantity), 0)) AS TotalDisocunt
+FROM Customers
+LEFT JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+LEFT JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
+LEFT JOIN ProductPrices ON OrderDetails.ProductID = ProductPrices.ProductID
+WHERE ProductPrices.ToTime IS NULL
+GROUP BY Customers.CustomerID
+GO
+
+
+-- OrderStatisticsView
+CREATE VIEW OrderStatisticsView
+AS
+SELECT 
+(SELECT COUNT(*) FROM Orders) as [całkowita liczba zamówień],
+(SELECT SUM(ProductPrices.UnitPrice*Quantity*(1- (DiscountPercent/100.0))) FROM Orders 
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+INNER JOIN Products ON OrderDetails.ProductID =  Products.ProductID
+INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
+WHERE ProductPrices.FromTime < Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime > Orders.OrderDate)
+) as [całkowita cena zrealizowanych zamówień],
+(SELECT COUNT(*) FROM Orders 
+INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID 
+INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+) as [ilość zamowien dla klientow indywidualnych],
+(SELECT COUNT(*) FROM Orders 
+INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID 
+INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
+) as [ilość zamowien dla klientów firmowych],
+(SELECT COUNT(*) FROM Orders WHERE PaymentDate = NULL) as [ilość zamówień nieopłaconych],
+(SELECT COUNT(*) FROM Orders WHERE CollectDate = NULL) as [ilość zamówień nieodebranych],
+(SELECT TOP 1 OrderDate FROM Orders ORDER BY OrderDate DESC) as [data ostatnio zrealizowanego zamówienia]
+GO
+
+
+
 -- FUNCTIONS --
--- Wypisz zamówienie po id
 CREATE FUNCTION GetDetailsOfOrder(@input int)
     RETURNS table AS
         RETURN
-        SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as cena, Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia as rodzaj_płatności--, RestaurantEmployees.FirstName as imie_obsługującego_pracownika, Customers.Email as kontakt_do_klienta
+        SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as Price, OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0) as PriceAfterDiscount,
+	Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -536,7 +642,7 @@ go
 CREATE FUNCTION GetOrdersAboveValue(@input int)
     RETURNS table AS
         RETURN
-        SELECT Orders.OrderID, Orders.OrderStatus, OrderDetails.Quantity*ProductPrices.UnitPrice as cena
+        SELECT Orders.OrderID, Orders.OrderStatus, OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0) AS PriceAfterDiscount
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -548,7 +654,7 @@ go
 CREATE FUNCTION GetValueOfOrdersOnDay(@date date)
     RETURNS table AS
         RETURN  
-        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as Suma
+        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0)) as Suma
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -557,11 +663,12 @@ CREATE FUNCTION GetValueOfOrdersOnDay(@date date)
         AND MONTH(@date) = MONTH(Orders.OrderDate)
         AND DAY(@date) = DAY(Orders.OrderDate)
 go
+
 -- suma zamówień danego miesiąca
 CREATE FUNCTION GetValueOfOrdersOnMonth(@date date)
     RETURNS table AS
         RETURN
-        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as Suma
+	SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0)) as Suma
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -575,12 +682,12 @@ CREATE FUNCTION GetValueOfOrder(@input int)
     RETURNS int AS
 	BEGIN
 	DECLARE @value INT;
-        SELECT   @value = OrderDetails.Quantity*ProductPrices.UnitPrice 
+        SELECT   @value = OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0)
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
         INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
-        WHERE Orders.OrderID = @input
+        WHERE (Orders.OrderID = @input) AND (Orders.OrderDate >= ProductPrices.FromTime AND ( ProductPrices.ToTime is NULL OR ProductPrices.ToTime>=Orders.OrderDate))
 	RETURN IsNull(@value, 0);
 	END
 go
@@ -727,8 +834,48 @@ RETURN
 GO
 
 
+CREATE FUNCTION invoice(@ordersID int)
+RETURNS table
+AS
+RETURN
+       SELECT Products.ProductName as[nazwa produktu], 
+        OrderDetails.Quantity as [ilosc], 
+        ProductPrices.UnitPrice as [cena produktu], 
+        Orders.DiscountPercent as [zniżka], 
+        ProductPrices.UnitPrice*(1- (Orders.DiscountPercent/100.0)) as [cena produktu z uwzględnieniem zniżki],
+		Orders.OrderDate as [data zamowienia] FROM Orders 
+        INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+        INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
+        INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
+        WHERE ProductPrices.FromTime >= Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime  >= Orders.OrderDate)
+        AND Orders.OrderID = @ordersID
+GO
+
+CREATE FUNCTION collectiveInvoice(@companyID int)
+RETURNS table
+AS 
+RETURN 
+        SELECT 
+        SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as [calkowita cena produktow],
+        ROUND(AVG(Orders.DiscountPercent),2) as [srednia znizek],
+        Orders.OrderDate as [data zamowienia],
+        Companies.NIP as [NIP firmy]
+        FROM Companies 
+        INNER JOIN  Customers ON Companies.CustomerID = Customers.CustomerID
+        INNER JOIN ORDERS ON Customers.CustomerID = Orders.CustomerID
+        INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+        INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
+        INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
+        WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
+        AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+        AND Companies.CompanyID = @companyID 
+        AND ProductPrices.FromTime >= Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime  >= Orders.OrderDate)
+        GROUP BY Orders.OrderDate,Companies.NIP
+GO
+
+
+
 -- PROCEDURES --
--- dodawanie kategorii
 CREATE PROCEDURE AddCategoryProcedure
 @CategoryName varchar(64)
 AS
@@ -1575,6 +1722,7 @@ END
 go
 
 
+
 -- TRIGGERS --
 CREATE TRIGGER AddMenuOneDayInAdvanceTrigger
 	ON Menu
@@ -1695,7 +1843,7 @@ GO
 
 -- CheckDiscountAvailabilityTrigger
 CREATE TRIGGER CheckDiscountAvailabilityTrigger
-ON Reservation
+ON Orders
 AFTER INSERT AS
 BEGIN
 	DECLARE @InsertedOrderID int
@@ -1735,28 +1883,32 @@ BEGIN
 			                  FROM Customers
 				          JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
                           JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID AND (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
+                          WHERE Orders.CustomerID = @InsertedCustomerID AND ( [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
 
                           
 
 	DECLARE @ThisOrderCustomerNumberValueOfOrders int
-	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(t.val) FROM (SELECT (  SELECT * FROM  [dbo].GetValueOfOrder(Orders.OrderID)    ) as val, Customers.CustomerID --       (@InsertedOrderID)) --sumuje wszystkie zamówienia danego klienta
+	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(   [dbo].GetValueOfOrder(Orders.OrderID))  --sumuje wszystkie zamówienia danego klienta
 			                  FROM Customers
 				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
                           INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID) as t)
+                          WHERE Orders.CustomerID = @InsertedCustomerID) 
 
 
 	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderZ1
 		BEGIN
 	    			PRINT ('Qualified for first discount')
-					--przypisanie zniżki @ThisOrderR1
+					UPDATE TempDiscount 
+					SET DiscountPercent = @ThisOrderR1, ToTime = NULL, FromTime = GETDATE()
+					WHERE CustomerID = @InsertedOrderID
 		END
 
     IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderK2
         BEGIN
 	    			PRINT ('Qualified for second discount')
-					--przypisanie zniżki @ThisOrderR1 @ThisOrderD1
+					UPDATE TempDiscount 
+					SET DiscountPercent = @ThisOrderR1, ToTime = DATEADD(day,@ThisOrderD1, GETDATE()), FromTime = GETDATE()
+					WHERE CustomerID = @InsertedOrderID
 		END
 END
 GO
@@ -1782,11 +1934,11 @@ DECLARE @InsertedReservationID int
 
     DECLARE @ThisOrderWK int
 	SET @ThisOrderWK = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='WK' AND toTime = NULL)
+			                FROM VariablesData WHERE VariableType='WK' AND toTime IS NULL)
 
     DECLARE @ThisOrderWZ int
 	SET @ThisOrderWZ = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='WZ' AND toTime = NULL)
+			                FROM VariablesData WHERE VariableType='WZ' AND toTime IS NULL)
                                 
 
 	DECLARE @ThisOrderCustomerNumberOfOrders int
@@ -1797,7 +1949,7 @@ DECLARE @InsertedReservationID int
                           WHERE Orders.CustomerID = @InsertedCustomerID) 
 
 	DECLARE @ThisOrderCustomerNumberValueOfOrders int
-	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
+	SET @ThisOrderCustomerNumberValueOfOrders = (dbo.GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
 			                  )
 
     DECLARE @flag int
@@ -1821,174 +1973,6 @@ DECLARE @InsertedReservationID int
 END
 GO
 
--- CheckReservationSeatsTrigger
-CREATE TRIGGER CheckReservationSeatsTrigger
-	ON Reservation
-	AFTER INSERT AS
-BEGIN
-	DECLARE @InsertedReservationID int
-	SET @InsertedReservationID = (SELECT ReservationID
-			       FROM INSERTED)
-	DECLARE @InsertedSeats int
-	SET @InsertedSeats = (SELECT Seats
-			     FROM Reservation
-			     WHERE ReservationID = @InsertedReservationID)
-	IF  @InsertedSeats < 2
-		BEGIN
-			PRINT ('Adding new reservation failed. Reservation must be inserted with at least two seats')
-			DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
-		END
-END
-GO
-
--- CheckReservationCapacityTrigger
-CREATE TRIGGER CheckReservationCapacityTrigger
-	ON Reservation
-	AFTER INSERT AS
-BEGIN
-	DECLARE @InsertedReservationID int
-	SET @InsertedReservationID = (SELECT ReservationID
-			       FROM INSERTED)
-	DECLARE @InsertedSeats int
-	SET @InsertedSeats = (SELECT Seats
-			     FROM Reservation
-			     WHERE ReservationID = @InsertedReservationID)
-	IF  @InsertedSeats > (SELECT DiningTables.NumberOfSeats FROM Reservation INNER JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID WHERE @InsertedReservationID = ReservationID)
-		BEGIN
-			PRINT ('Adding new reservation failed. Reservation must be inserted with less or equal number of availabile seats')
-			DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
-		END
-END
-GO
-
--- CheckDiscountAvailabilityTrigger
-CREATE TRIGGER CheckDiscountAvailabilityTrigger
-ON Reservation
-
-AFTER INSERT AS
-BEGIN
-	DECLARE @InsertedOrderID int
-	SET @InsertedOrderID = (SELECT OrderID
-			        FROM INSERTED)
-
-	DECLARE @InsertedCustomerID int
-	SET @InsertedCustomerID = (SELECT Orders.CustomerID
-			          FROM INSERTED
-					  INNER JOIN Orders ON Orders.OrderID = INSERTED.OrderID)
-                      ------------------------------------------------
-
-    DECLARE @ThisOrderZ1 int
-	SET @ThisOrderZ1 = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='Z1' AND toTime = NULL)
-
-    DECLARE @ThisOrderK1 int
-	SET @ThisOrderK1 = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='K1' AND toTime = NULL)
-    DECLARE @ThisOrderR1 int
-	SET @ThisOrderR1 = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='R1' AND toTime = NULL)
-                            ---------------------------------
-    DECLARE @ThisOrderK2 int
-	SET @ThisOrderK2 = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='K2' AND toTime = NULL)   
-    DECLARE @ThisOrderR2 int
-	SET @ThisOrderR2 = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='R2' AND toTime = NULL)
-    DECLARE @ThisOrderD1 int
-	SET @ThisOrderD1 = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='D1' AND toTime = NULL)
-    -----------------------------------               --------------------------------------                                  
-
-	DECLARE @ThisOrderCustomerNumberOfOrders int
-	SET @ThisOrderCustomerNumberOfOrders =(SELECT COUNT(Orders.OrderID) --liczy wszystkie zamówienia danego klienta >K1
-			                  FROM Customers
-				          JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
-                          JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID AND (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID))>@ThisOrderK1)
-
-
-
-	DECLARE @ThisOrderCustomerNumberValueOfOrders int
-	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT SUM(t.val) FROM (SELECT (  SELECT * FROM  [dbo].GetValueOfOrder(Orders.OrderID)    ) as val, Customers.CustomerID --       (@InsertedOrderID)) --sumuje wszystkie zamówienia danego klienta
-			                  FROM Customers
-				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
-                          INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID) as t)
-
-
-	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderZ1
-		BEGIN
-	    			PRINT ('Qualified for first discount')
-					--przypisanie zniżki @ThisOrderR1
-		END
-
-    IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderK2
-        BEGIN
-	    			PRINT ('Qualified for second discount')
-					--przypisanie zniżki @ThisOrderR1 @ThisOrderD1
-		END
-END
-GO
-
-
--- CheckIndividualReservationAvailabilityTrigger
-CREATE TRIGGER CheckIndividualReservationAvailabilityTrigger
-ON Reservation
-AFTER INSERT AS
-BEGIN
-DECLARE @InsertedReservationID int
-	SET @InsertedReservationID = (SELECT ReservationID
-			       FROM INSERTED)
-	DECLARE @InsertedOrderID int
-	SET @InsertedOrderID = (SELECT OrderID
-			        FROM INSERTED)
-
-	DECLARE @InsertedCustomerID int
-	SET @InsertedCustomerID = (SELECT Orders.CustomerID
-			          FROM INSERTED
-                        INNER JOIN Orders ON Orders.OrderID = INSERTED.OrderID
-					  )
-
-    DECLARE @ThisOrderWK int
-	SET @ThisOrderWK = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='WK' AND toTime = NULL)
-
-    DECLARE @ThisOrderWZ int
-	SET @ThisOrderWZ = (SELECT VariableValue
-			                FROM VariablesData WHERE VariableType='WZ' AND toTime = NULL)
-
-
-	DECLARE @ThisOrderCustomerNumberOfOrders int
-	SET @ThisOrderCustomerNumberOfOrders =(SELECT COUNT(Orders.OrderID) --liczy wszystkie zamówienia danego klienta 
-			                  FROM Customers
-				          INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
-                          INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID
-                          WHERE Orders.CustomerID = @InsertedCustomerID) 
-
-	DECLARE @ThisOrderCustomerNumberValueOfOrders int
-	SET @ThisOrderCustomerNumberValueOfOrders = (SELECT * FROM [dbo].GetValueOfOrder(@InsertedOrderID) --liczy wartosc danego zamowienia
-			                  )
-
-    DECLARE @flag int
-    SET @flag =0
-	IF @ThisOrderCustomerNumberOfOrders >= @ThisOrderWK
-		BEGIN
-	    			PRINT ('Qualified for reservation')
-                    SET @flag =1
-		END
-
-    IF @ThisOrderCustomerNumberValueOfOrders >= @ThisOrderWZ AND @flag=0
-        BEGIN
-	    			PRINT ('Qualified for reservation')
-                    SET @flag =1
-		END
-    IF  @flag=0
-        BEGIN
-	    			PRINT ('Not qualified for reservation')
-                    DELETE FROM Reservation WHERE ReservationID = @InsertedReservationID
-		END
-END
-GO
 
 
 -- INDEXES --
