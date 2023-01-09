@@ -215,3 +215,15 @@ AND Products.ProductID IN (SELECT ProductID
 					   WHERE ToTime IS NULL))
 GROUP BY Products.ProductName 
 GO
+
+-- TotalCustomersDiscountsView
+CREATE VIEW TotalCustomersDiscountsView
+AS
+SELECT Customers.CustomerID, SUM(ISNULL((DiscountPercent / 100.0) * (UnitPrice * Quantity), 0)) AS TotalDisocunt
+FROM Customers
+LEFT JOIN Orders ON Orders.CustomerID = Customers.CustomerID
+LEFT JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
+LEFT JOIN ProductPrices ON OrderDetails.ProductID = ProductPrices.ProductID
+WHERE ProductPrices.ToTime IS NULL
+GROUP BY Customers.CustomerID
+GO
