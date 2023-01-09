@@ -221,4 +221,7 @@ RETURN
 	FROM (SELECT ((SELECT SUM(NumberOfSeats) FROM DiningTables) - (SELECT SUM(Seats) FROM Reservation WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime)) as nrOfFreeSeats
 	) as free_seats 
 GO
+
+
+
 	

@@ -164,3 +164,35 @@ FROM Reservation
 JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID
 WHERE ToTime < GETDATE()
 GO
+
+
+--Total_Reservation_Report_for_Customers_View
+CREATE VIEW Total_Reservation_Report_for_Customers_View AS
+SELECT 
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilość dokonanych rezerwacji prywatnie w tym miesiącu],
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilosc dokonanych rezerwacji prywatnie w tym tygodniu],
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
+WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
+AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilosc dokonanych rezerwacji na firmę w tym miesiacu],
+(SELECT COUNT(*)  FROM Reservation 
+INNER JOIN Orders ON Reservation.OrderID = Orders.OrderID 
+INNER JOIN Customers ON Customers.CustomerID = Reservation.ReservationID 
+INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
+WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+) as [ilosc dokonanych rezerwacji na firmę w tym tygodniu]
+GO
