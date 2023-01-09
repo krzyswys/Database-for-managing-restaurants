@@ -135,7 +135,7 @@ GO
 --Five_Best_Employees_View
 CREATE VIEW Five_Best_Employees_View AS
 SELECT TOP 5 RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName FROM RestaurantEmployees
-INNER JOIN Orders ON Orders.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
+LEFT JOIN Orders ON Orders.RestaurantEmployeeID = RestaurantEmployees.RestaurantEmployeeID
 GROUP BY RestaurantEmployees.RestaurantEmployeeID, FirstName,LastName
 ORDER BY COUNT(OrderID) DESC
 GO
@@ -161,8 +161,8 @@ GO
 CREATE VIEW Available_Tables_View AS
 SELECT DISTINCT DiningTables.DiningTableID, DiningTables.NumberOfSeats
 FROM Reservation
-JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID
-WHERE ToTime < GETDATE()
+RIGHT JOIN DiningTables ON DiningTables.DiningTableID = Reservation.DiningTableID
+WHERE ToTime < GETDATE() OR ToTime IS NULL
 GO
 
 
@@ -232,23 +232,23 @@ GO
 -- OrderStatisticsView
 CREATE VIEW OrderStatisticsView
 AS
-SELECT 
+SELECT
 (SELECT COUNT(*) FROM Orders) as [całkowita liczba zamówień],
-(SELECT SUM(ProductPrices.UnitPrice*Quantity*(1- (DiscountPercent/100.0))) FROM Orders 
+(SELECT SUM(ProductPrices.UnitPrice*Quantity*(1- (DiscountPercent/100.0))) FROM Orders
 INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON OrderDetails.ProductID =  Products.ProductID
 INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
 WHERE ProductPrices.FromTime < Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime > Orders.OrderDate)
 ) as [całkowita cena zrealizowanych zamówień],
-(SELECT COUNT(*) FROM Orders 
-INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID 
+ (SELECT COUNT(*) FROM Orders
+INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID
 INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
 ) as [ilość zamowien dla klientow indywidualnych],
-(SELECT COUNT(*) FROM Orders 
-INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID 
+(SELECT COUNT(*) FROM Orders
+INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID
 INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
 ) as [ilość zamowien dla klientów firmowych],
-(SELECT COUNT(*) FROM Orders WHERE PaymentDate = NULL) as [ilość zamówień nieopłaconych],
-(SELECT COUNT(*) FROM Orders WHERE CollectDate = NULL) as [ilość zamówień nieodebranych],
+(SELECT COUNT(*) FROM Orders WHERE PaymentDate IS NULL) as [ilość zamówień nieopłaconych],
+(SELECT COUNT(*) FROM Orders WHERE CollectDate IS NULL) as [ilość zamówień nieodebranych],
 (SELECT TOP 1 OrderDate FROM Orders ORDER BY OrderDate DESC) as [data ostatnio zrealizowanego zamówienia]
 GO
