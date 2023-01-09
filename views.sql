@@ -105,7 +105,7 @@ AND YEAR(Orders.OrderDate) = YEAR(GETDATE())) AS [total number of sold products 
 WHERE DATEPART(WEEK,Orders.OrderDate) = DATEPART(WEEK,GETDATE()) AND YEAR(Orders.OrderDate) = YEAR(GETDATE()))
 AS [total number of sold products for the last week],
 
-(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as calkowitaSuma
+(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as calkowitaSuma
 FROM Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID 
 INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
@@ -114,7 +114,7 @@ AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
 AND Orders.OrderDate >= ProductPrices.FromTime AND (ProductPrices.ToTime is NULL OR ProductPrices.ToTime >= Orders.OrderDate)
 GROUP BY Orders.OrderID) AS table2 ) AS [total order price for the last month],
 
-(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as calkowitaSuma
+(SELECT SUM(table2.calkowitaSuma) FROM (SELECT Orders.OrderID,SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as calkowitaSuma
 FROM Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID 
 INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
