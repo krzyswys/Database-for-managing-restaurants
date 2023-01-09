@@ -227,3 +227,27 @@ LEFT JOIN ProductPrices ON OrderDetails.ProductID = ProductPrices.ProductID
 WHERE ProductPrices.ToTime IS NULL
 GROUP BY Customers.CustomerID
 GO
+
+
+-- OrderStatisticsView
+CREATE VIEW OrderStatisticsView
+AS
+SELECT 
+(SELECT COUNT(*) FROM Orders) as [całkowita liczba zamówień],
+(SELECT SUM(ProductPrices.UnitPrice*Quantity*(1- (DiscountPercent/100))) FROM Orders 
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+INNER JOIN Products ON OrderDetails.ProductID =  Products.ProductID
+INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
+WHERE ProductPrices.FromTime < Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime > Orders.OrderDate)
+) as [całkowita cena zrealizowanych zamówień],
+(SELECT COUNT(*) FROM Orders 
+INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID 
+INNER JOIN IndividualCustomers ON IndividualCustomers.CustomerID = Customers.CustomerID
+) as [ilość zamowien dla klientow indywidualnych],
+(SELECT COUNT(*) FROM Orders 
+INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID 
+INNER JOIN Companies ON Companies.CustomerID = Customers.CustomerID
+) as [ilość zamowien dla klientów firmowych],
+(SELECT COUNT(*) FROM Orders WHERE PaymentDate = NULL) as [ilość zamówień nieopłaconych],
+(SELECT COUNT(*) FROM Orders WHERE CollectDate = NULL) as [ilość zamówień nieodebranych],
+(SELECT TOP 1 OrderDate FROM Orders ORDER BY OrderDate DESC) as [data ostatnio zrealizowanego zamówienia]
