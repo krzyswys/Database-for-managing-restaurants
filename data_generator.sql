@@ -1,4 +1,3 @@
---Categories
 INSERT INTO Categories (CategoryID, CategoryName)
 VALUES 
 	(1, 'Beverages'),
@@ -106,9 +105,13 @@ VALUES
 --Menu
 INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
 VALUES 
-	(1, 'Current', '2022-12-05 11:36:14.840', NULL),
-	(2, 'Previous1', '2022-01-02 11:36:14.840', '2022-12-04 11:36:14.840'),
-	(3, 'Previous2', '2021-02-05 11:36:14.840', '2022-01-01 11:36:14.840');
+	(1, 'Current', '2023-02-25 11:36:14.840', NULL);
+INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
+VALUES 
+	(2, 'Previous1', '2023-03-02 11:36:14.840', '2023-12-04 11:36:14.840');
+INSERT INTO Menu (MenuID, MenuName, FromTime, ToTime)
+VALUES 
+	(3, 'Previous2', '2023-05-11 11:36:14.840', '2023-09-11 11:36:14.840');
 
 
 --MenuDetails
@@ -234,18 +237,100 @@ VALUES
 -- Orders
 INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
 VALUES
-	(1, 1, '2023-01-08 11:36:14.840', NULL, NULL, 2, 'awaiting payment', 1),
-	(2, 2, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3),
-	(3, 3, '2023-01-07 11:36:14.840', NULL, '2023-01-07 11:38:14.840', 2, 'in preparation', 1),
-	(4, 4, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1);
+	(1, 1, '2023-01-08 11:36:14.840', NULL, NULL, 2, 'awaiting payment', 1);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(2, 2, '2023-01-06 11:36:14.840', '2023-01-20 11:36:14.840', '2023-01-06 11:38:14.840', 1, 'completed', 3);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(3, 7, '2023-01-07 11:36:14.840', NULL, '2023-01-07 11:38:14.840', 2, 'in preparation', 1);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(4, 6, '2023-01-06 11:36:14.840', '2023-01-07 11:36:14.840', '2023-01-06 11:38:14.840', 3, 'completed', 1);
+INSERT INTO Orders(OrderID, CustomerID, OrderDate, CollectDate, PaymentDate, PayVia, OrderStatus, RestaurantEmployeeID)
+VALUES
+	(5, 1, '2023-01-06 11:36:14.840', NULL, '2023-01-06 11:38:14.840', 2, 'waiting for pickup', 1);
 
 -- OrderDetails
 INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
 VALUES 
-	-- OrderID: 1
-	(1, 1, 2),
-	(1, 4, 1),
-	-- OrderID: 2
-	(2, 2, 1),
-	(2, 5, 1),
+	(1, 1, 2);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(1, 4, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(2, 2, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(2, 5, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
 	(2, 9, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(3, 1, 2);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(3, 4, 2);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(4, 2, 2);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(4, 3, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(5, 11, 1);
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES 
+	(5, 1, 3);
+
+-- Invoices
+INSERT INTO Invoices (InvoiceID, OrderID)
+VALUES 
+	(1, 3),
+	(2, 4);
+
+-- Takeaway
+INSERT INTO Takeaway (OrderID, PickupDate)
+VALUES 
+	(1, '2023-01-06 12:38:14.840');
+
+-- DiningTable
+INSERT INTO DiningTables (DiningTableID, NumberOfSeats)
+VALUES 
+	(1, 5),
+	(2, 5),
+	(3, 15),
+	(4, 10),
+	(5, 10),
+	(6, 8),
+	(7, 10),
+	(8, 8),
+	(9, 2),
+	(10, 2),
+	(11, 3),
+	(12, 3);
+
+-- VariablesData
+INSERT INTO VariablesData (FromTime, ToTime, VariableType, VariableValue)
+VALUES ('2019-01-07 11:30:00.000', NULL, 'WZ', 50),
+	   ('2019-01-07 11:30:00.000', NULL, 'WZ', 5),
+	   ('2019-01-07 11:30:00.000', NULL, 'Z1', 10),
+	   ('2019-01-07 11:30:00.000', NULL, 'K1', 30),
+	   ('2019-01-07 11:30:00.000', NULL, 'R1%', 3),
+	   ('2019-01-07 11:30:00.000', NULL, 'K2', 1000),
+	   ('2019-01-07 11:30:00.000', NULL, 'R2%', 5),
+	   ('2019-01-07 11:30:00.000', NULL, 'D1', 7);
+
+-- Reservation
+INSERT INTO Reservation (ReservationID, FromTime, ToTime, Seats, DiningTableID, OrderID)
+VALUES (1, '2023-01-07 11:30:00.000', '2023-01-07 13:30:00.000', 4, 2, 3)
+
+-- CompanyReservationParticipants
+INSERT INTO CompanyReservationParticipants (ReservationID, CompanyEmployeeID)
+VALUES (1, 4),
+	   (1, 5),
+	   (1, 6),
+	   (1, 7);
