@@ -315,8 +315,8 @@ VALUES
 
 -- VariablesData
 INSERT INTO VariablesData (FromTime, ToTime, VariableType, VariableValue)
-VALUES ('2019-01-07 11:30:00.000', NULL, 'WZ', 50),
-	   ('2019-01-07 11:30:00.000', NULL, 'WZ', 5),
+VALUES ('2019-02-17 11:30:00.000', NULL, 'WZ', 50),
+	   ('2019-01-07 11:30:00.000', '2019-02-17 11:30:00.000', 'WZ', 5),
 	   ('2019-01-07 11:30:00.000', NULL, 'Z1', 10),
 	   ('2019-01-07 11:30:00.000', NULL, 'K1', 30),
 	   ('2019-01-07 11:30:00.000', NULL, 'R1%', 3),
