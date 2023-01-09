@@ -238,7 +238,7 @@ SELECT
 INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
 INNER JOIN Products ON OrderDetails.ProductID =  Products.ProductID
 INNER JOIN ProductPrices ON ProductPrices.ProductID = Products.ProductID
-WHERE ProductPrices.FromTime < Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime > Orders.OrderDate)
+WHERE ProductPrices.FromTime < Orders.OrderDate AND (ProductPrices.ToTime IS NULL OR ProductPrices.ToTime > Orders.OrderDate)
 ) as [całkowita cena zrealizowanych zamówień],
  (SELECT COUNT(*) FROM Orders
 INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID
