@@ -2,7 +2,8 @@
 CREATE FUNCTION GetDetailsOfOrder(@input int)
     RETURNS table AS
         RETURN
-        SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as cena, Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia as rodzaj_płatności--, RestaurantEmployees.FirstName as imie_obsługującego_pracownika, Customers.Email as kontakt_do_klienta
+        SELECT OrderDetails.Quantity*ProductPrices.UnitPrice as Price, OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0) as PriceAfterDiscount,
+	Orders.OrderID,Orders.OrderDate, Orders.OrderStatus, Orders.PayVia
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -35,7 +36,7 @@ go
 CREATE FUNCTION GetOrdersAboveValue(@input int)
     RETURNS table AS
         RETURN
-        SELECT Orders.OrderID, Orders.OrderStatus, OrderDetails.Quantity*ProductPrices.UnitPrice as cena
+        SELECT Orders.OrderID, Orders.OrderStatus, OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0) AS PriceAfterDiscount
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -47,7 +48,7 @@ go
 CREATE FUNCTION GetValueOfOrdersOnDay(@date date)
     RETURNS table AS
         RETURN  
-        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as Suma
+        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0)) as Suma
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -56,11 +57,12 @@ CREATE FUNCTION GetValueOfOrdersOnDay(@date date)
         AND MONTH(@date) = MONTH(Orders.OrderDate)
         AND DAY(@date) = DAY(Orders.OrderDate)
 go
+
 -- suma zamówień danego miesiąca
 CREATE FUNCTION GetValueOfOrdersOnMonth(@date date)
     RETURNS table AS
         RETURN
-        SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice) as Suma
+	SELECT SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0)) as Suma
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
@@ -70,11 +72,11 @@ CREATE FUNCTION GetValueOfOrdersOnMonth(@date date)
 go
 
 -- wartosc X zamówienia
-ALTER FUNCTION GetValueOfOrder(@input int)
+CREATE FUNCTION GetValueOfOrder(@input int)
     RETURNS int AS
 	BEGIN
 	DECLARE @value INT;
-        SELECT   @value = OrderDetails.Quantity*ProductPrices.UnitPrice 
+        SELECT   @value = OrderDetails.Quantity*ProductPrices.UnitPrice*(1-Orders.DiscountPercent/100.0)
         FROM Orders
         INNER JOIN OrderDetails ON OrderDetails.OrderID = Orders.OrderID
         INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
