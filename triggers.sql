@@ -118,7 +118,7 @@ GO
 
 -- CheckDiscountAvailabilityTrigger
 CREATE TRIGGER CheckDiscountAvailabilityTrigger
-ON Reservation
+ON Orders
 AFTER INSERT AS
 BEGIN
 	DECLARE @InsertedOrderID int
