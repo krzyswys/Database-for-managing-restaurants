@@ -206,16 +206,18 @@ CREATE FUNCTION RemainingFreeSeats()
 RETURNS table
 AS 
 RETURN 
-	SELECT (
-	(SELECT 
-	SUM(NumberOfSeats) 
-	FROM DiningTables) - 
-	
-	(SELECT 
-	SUM(Seats)
-	FROM Reservation 
-	WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime
-	)) as [free seats]
+SELECT (
+               (SELECT
+                    SUM(NumberOfSeats)
+                FROM DiningTables) -
+
+               ISNULL((SELECT
+                           SUM(Seats)
+                       FROM Reservation
+                       WHERE GETDATE() >= FromTime AND GETDATE() <= ToTime
+                      ),0)
+
+           ) as [free seats]
 GO
 
 CREATE FUNCTION CanAccommodateCustomers(@customers int)
@@ -232,16 +234,16 @@ CREATE FUNCTION invoice(@ordersID int)
 RETURNS table
 AS
 RETURN
-       SELECT Products.ProductName as[nazwa produktu], 
-        OrderDetails.Quantity as [ilosc], 
-        ProductPrices.UnitPrice as [cena produktu], 
-        Orders.DiscountPercent as [zniżka], 
-        ProductPrices.UnitPrice*(1- (Orders.DiscountPercent/100.0)) as [cena produktu z uwzględnieniem zniżki],
-		Orders.OrderDate as [data zamowienia] FROM Orders 
-        INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
-        INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
-        INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
-        WHERE ProductPrices.FromTime >= Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime  >= Orders.OrderDate)
+SELECT Products.ProductName as[nazwa produktu],
+       OrderDetails.Quantity as [ilosc],
+       ProductPrices.UnitPrice as [cena produktu],
+       Orders.DiscountPercent as [zniżka],
+       ProductPrices.UnitPrice*(1- (Orders.DiscountPercent/100.0)) as [cena produktu z uwzględnieniem zniżki],
+       Orders.OrderDate as [data zamowienia] FROM Orders
+	INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+	INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
+	INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
+	WHERE ProductPrices.FromTime <= Orders.OrderDate AND (ProductPrices.ToTime IS NULL OR ProductPrices.ToTime  >= Orders.OrderDate)
         AND Orders.OrderID = @ordersID
 GO
 
