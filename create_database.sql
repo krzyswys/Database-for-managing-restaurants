@@ -1693,7 +1693,7 @@ SELECT Products.ProductName as[nazwa produktu],
         AND Orders.OrderID = @ordersID
 GO
 
-ALTER FUNCTION collectiveInvoice(@companyID int)
+CREATE FUNCTION collectiveInvoice(@companyID int)
     RETURNS table
         AS
         RETURN
