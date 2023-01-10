@@ -245,25 +245,26 @@ RETURN
         AND Orders.OrderID = @ordersID
 GO
 
-CREATE FUNCTION collectiveInvoice(@companyID int)
-RETURNS table
-AS 
-RETURN 
-        SELECT 
-        SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as [calkowita cena produktow],
-        ROUND(AVG(Orders.DiscountPercent),2) as [srednia znizek],
-        Orders.OrderDate as [data zamowienia],
-        Companies.NIP as [NIP firmy]
-        FROM Companies 
-        INNER JOIN  Customers ON Companies.CustomerID = Customers.CustomerID
-        INNER JOIN ORDERS ON Customers.CustomerID = Orders.CustomerID
-        INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
-        INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
-        INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
-        WHERE MONTH(Orders.OrderDate) = MONTH(GETDATE()) 
-        AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
-        AND Companies.CompanyID = @companyID 
-        AND ProductPrices.FromTime >= Orders.OrderDate AND (ProductPrices.ToTime = NULL OR ProductPrices.ToTime  >= Orders.OrderDate)
+ALTER FUNCTION collectiveInvoice(@companyID int)
+    RETURNS table
+        AS
+        RETURN
+        SELECT
+            SUM(OrderDetails.Quantity*ProductPrices.UnitPrice*(1-(Orders.DiscountPercent/100.0))) as [calkowita cena produktow],
+            ROUND(AVG(Orders.DiscountPercent),2) as [srednia znizek],
+            Orders.OrderDate as [data zamowienia],
+            Companies.NIP as [NIP firmy]
+        FROM Companies
+                 INNER JOIN  Customers ON Companies.CustomerID = Customers.CustomerID
+                 INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+                 INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+                 INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID
+                 INNER JOIN ProductPrices ON Products.ProductID = ProductPrices.ProductID
+        WHERE
+            MONTH(Orders.OrderDate) = MONTH(GETDATE())
+          AND YEAR(Orders.OrderDate) = YEAR(GETDATE())
+            AND Companies.CompanyID = @companyID
+           AND ProductPrices.FromTime <= Orders.OrderDate AND (ProductPrices.ToTime IS NULL OR ProductPrices.ToTime  >= Orders.OrderDate)
         GROUP BY Orders.OrderDate,Companies.NIP
 GO
 
